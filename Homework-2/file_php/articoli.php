@@ -17,7 +17,7 @@ XML;
 <body>
 
 <?php
-require_once("config.php");
+require_once("connection.php");
 
 
 session_start();
@@ -44,10 +44,10 @@ if (!isset($_POST['azione'])) {
     <a href="../file_html/index1.html"><button type="button"  value="Home" class="button-home">Home</button></a>
 
 
-    <div id="catalogo-articoli"> 
+<div id="catalogo-articoli"> 
 
 <?php
-  $query = "SELECT * FROM  prodotti" ;
+  $query = "SELECT * FROM  articoli";
   $result = mysqli_query($connessione, $query);
   if (!$result) {
     printf("Errore nella query.\n");
@@ -55,25 +55,16 @@ if (!isset($_POST['azione'])) {
   }
  
   while ($row = mysqli_fetch_assoc($result)) {
-?>
-
+    ?>
       <div class="articoli">
-       
-        <img src="../img_car/<?php echo ($row['id']); ?>.png"  class="card" ></img>
-        
-        <form class="ciao" action="articoli.php#articoli<?php echo ($row['id']); ?>" method="post">
-          <input type="hidden"  name="id_articolo" value="<?php echo ($row['id']); ?>" />
-          <input type="number" name="quantita" value="0" min="0" step="1" size="3" max="99" />
-          <p class="prezzo"><?php echo ($row['prezzo']); ?> &euro;</p>
-          <button type="submit" name="azione" value="aggiungi" class="button">Aggiungi</button>
-        </form>
+        <img src="<?php echo ($row['path_foto']); ?>"  class="card" ></img>
+        <p class="id"><?php echo ($row['id']); ?> </p>
+        <p class="prezzo"><?php echo ($row['prezzo']); ?> &euro;</p>
       </div>
 <?php
   }
 ?>
-
-   
-
+</div>
 
 </body>
 
