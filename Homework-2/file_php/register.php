@@ -13,6 +13,8 @@
         echo "<a href='../file_html/login.html'>Torna al login</a>";
     }
     else {
-        echo "Errore nella registrazione utente $sql. ". $connessione->error;
+        //echo "Errore nella registrazione utente $sql. ". $connessione->error;
+        header("Location: ../file_html/registrazione_ko.html");
+        exit;
     }
 ?>

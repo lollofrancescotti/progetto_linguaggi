@@ -10,6 +10,13 @@
     <body>
 
     <?php
+    session_start();
+    if(!isset($_SESSION['loggato'])) {
+    header("Location: ../file_html/login.html");
+    }
+     ?>
+
+    <?php
         require_once("connection.php");
         session_start();
 
@@ -28,9 +35,8 @@
     ?>
 
     <div id="contenuto">
-    <h2>Articoli Disponibili</h2>
-    <a href="carrello.php"><button type="button"  value="Vai al carrello" class="button-carrello">Vai al carrello</button></a>
     <a href="../file_html/index1.html"><button type="button"  value="Home" class="button-home">Home</button></a>
+    <h2>Articoli Disponibili</h2>
     <div id="catalogo-articoli"> 
 
         <?php

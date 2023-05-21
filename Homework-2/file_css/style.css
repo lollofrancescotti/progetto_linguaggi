@@ -252,24 +252,6 @@ ul#menu li a:hover{
 }
 
 
-.carrello {
-  margin-top: -50px;
-  background-color: lightgray;
-}
-
-
-.indietro-carrello {
-  padding: 6.5px 18px;
-  vertical-align: middle;
-}
-
-
-.risultato-carrello {
-  padding-left: 40px;
-  word-spacing: 15px;
-} 
-
-
 #catalogo-articoli{
   width: 100%;
   display: grid;
@@ -284,29 +266,13 @@ ul#menu li a:hover{
   margin-top: -30px;
 }
 
-.button-carrello{
-  outline: none;
-   width: 130px;
-   height: 60px;
-   background: lightgray;
-   color: black;
-   margin-left: 700px;
-   margin-bottom: 50px;
-   font-size: 20px;
-   border-radius: 10px;
-   cursor: pointer;
- }
-
-.button-carrello:hover{
-  background-color: gray;
-  transition: 0.5s;
-}
 .button-home{
    width: 130px;
    height: 60px;
    background: gray;
    color: black;
-   margin-left: -785px;
+   margin-left: 20px;
+   margin-top: 20px;
    font-size: 30px;
    border-radius: 10px;
    cursor: pointer;
