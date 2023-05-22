@@ -1,22 +1,4 @@
-<!DOCTYPE html> 
-<html lang="en">
-    <head>
-        <link rel="stylesheet" type="text/css" href="../file_css/style.css" />
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Articoli</title>
-    </head>
-    <body>
-
-    <?php
-    session_start();
-    if(!isset($_SESSION['loggato'])) {
-    header("Location: ../file_html/login.html");
-    }
-     ?>
-
-    <?php
+<?php
         require_once("connection.php");
         session_start();
 
@@ -33,6 +15,26 @@
             $_SESSION['carrello'][$id_articolo] += $quantita;
         }
     ?>
+
+
+<!DOCTYPE html> 
+<html lang="en">
+    <head>
+        <link rel="stylesheet" type="text/css" href="../file_css/style.css" />
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Articoli</title>
+    </head>
+    <body>
+
+    <?php
+    if(!isset($_SESSION['loggato'])) {
+    header("Location: ../file_html/login.html");
+    }
+     ?>
+
+ 
 
     <div id="contenuto">
     <a href="../file_html/index1.html"><button type="button"  value="Home" class="button-home">Home</button></a>
