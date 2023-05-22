@@ -17,6 +17,7 @@ if($connessione == false){
 $sql = "CREATE DATABASE IF NOT EXISTS $db";
 if ($connessione->query($sql) === TRUE) {
     echo "Database creato correttamente\n";
+    header("Location: ../index.html");
 } else {
     echo "Errore durante la creazione del database: " . $connessione->error;
 }
