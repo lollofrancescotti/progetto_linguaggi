@@ -1,7 +1,17 @@
+<?php
+    session_start();
+
+    if(isset($_COOKIE["tema"]) && $_COOKIE["tema"] == "dark"){
+        echo "<link rel=\"stylesheet\" href=\"../file_css/style_dark_login.css\" type=\"text/css\" />";
+    }
+    else{
+        echo "<link rel=\"stylesheet\" href=\"../file_css/style2.css\" type=\"text/css\" />";
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="stylesheet" href="../file_css/style2.css"/>
 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -27,8 +37,8 @@
 
 <input type="submit" value="Invia"></input>
 
-<p>Hai già un account? <a href="../file_html/login.html">Accedi</a></p>
-<p class="home"> Torna alla home <a href="../index.html">Home</a></p>
+<p>Hai già un account? <a href="../PHP/login.php">Accedi</a></p>
+<p class="home"> Torna alla home <a href="../PHP/index.php">Home</a></p>
 
 </form>
 

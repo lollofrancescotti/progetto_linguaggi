@@ -9,14 +9,6 @@
     }
 ?>
 
-
-<?php
-    if(!isset($_SESSION['loggato']) || $_SESSION['loggato'] !== true){
-        header("location: ../PHP/login.php");
-        exit;
-    }
-?>
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -27,9 +19,10 @@
     </head>
     <body>
         <div class=reg4>
-            <h1>Accesso eseguito correttamente!</h1>
-        
-            <a href="../PHP/index1.php"> <br>Ritorna al sito</a>
+            
+            <h1>Errore in fase di registrazione</h1>
+
+            <a href="../PHP/register.php"> <br>Ritorna alla registrazione</a>
         </div>
     </body>
 </html>

@@ -15,9 +15,8 @@
             $_SESSION['carrello'][$id_articolo] += $quantita;
         }
     ?>
-
-
-<!DOCTYPE html> 
+    
+    <!DOCTYPE html> 
 <html lang="en">
     <head>
         <link rel="stylesheet" type="text/css" href="../file_css/style.css" />
@@ -29,16 +28,25 @@
     <body>
 
     <?php
+
     if(!isset($_SESSION['loggato'])) {
-    header("Location: ../file_html/login.html");
+    header("Location: ../PHP/login.php");
     }
      ?>
-
- 
-
+     
     <div id="contenuto">
-    <a href="../file_html/index1.html"><button type="button"  value="Home" class="button-home">Home</button></a>
-    <h2>Articoli Disponibili</h2>
+    <div class="title">
+    <a href="../PHP/index1.php"><img src="../img/home.png" alt="tasto_home" class="home"></a>
+
+    <h2 class="mod">Articoli Disponibili</h2>
+    <h3 class="mod1">GIOCHI</h2>
+    <h4 class="mod2">CONSOLE</h2>
+    <h5 class="mod3">MANGA</h2>
+
+</div>
+<video autoplay muted loop id="video_back">
+    <source src="../video/video_sfondo.mp4" type="video/mp4"></source> 
+</video>
     <div id="catalogo-articoli"> 
 
         <?php
@@ -53,9 +61,8 @@
         ?>
       
         <div class="articoli">
-            <img src="<?php echo ($row['path_foto']); ?>"  class="card" ></img>
-            <p class="id"><?php echo ($row['id']); ?> </p>
-            <p class="prezzo"><?php echo ($row['prezzo']); ?> &euro;</p>
+            <a href="<?php echo ($row['path_info']); ?>">
+            <img src="<?php echo ($row['path_foto']); ?>"  class="card" ></img></a>
         </div>
 
         <?php

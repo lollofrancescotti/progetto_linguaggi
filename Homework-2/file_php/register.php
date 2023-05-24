@@ -8,13 +8,17 @@
 
     $sql = "INSERT INTO utenti (email, username, passwd) VALUES ('$email','$username','$hashed_password')";
 
-    if($connessione->query($sql)=== true){
-        echo "registrazione effettuata correttamente <br><br>";
-        echo "<a href='../file_html/login.html'>Torna al login</a>";
+    if(!empty($username) && !empty($email) && !empty($password) && $connessione->query($sql)=== true) {
+       
+        header("Location: ../PHP/registrazione_ok.php");
+    }
+    else
+    if(empty($username) || empty($email) || empty($password)){
+        header("Location:../PHP/registrazione_fallita.php");
     }
     else {
-        //echo "Errore nella registrazione utente $sql. ". $connessione->error;
-        header("Location: ../file_html/registrazione_ko.html");
+        header("Location: ../PHP/registrazione_ko.php");
         exit;
     }
+
 ?>
