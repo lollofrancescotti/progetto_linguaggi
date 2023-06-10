@@ -3,7 +3,7 @@
         session_start();
 
         if (!isset($_POST['azione'])) {
-            // Non fa niente
+        
         }
         else if ($_POST['azione'] === 'aggiungi') {
             $id_articolo = $_POST['id_articolo'];
@@ -30,15 +30,18 @@
     <?php
 
     if(!isset($_SESSION['loggato'])) {
-    header("Location: ../PHP/login.php");
+    header("Location: ../HTML/login.html");
     }
      ?>
      
     <div id="contenuto">
     <div class="title">
-    <a href="../PHP/index1.php"><img src="../img/home.png" alt="tasto_home" class="home"></a>
+    <a href="../HTML/index1.html"><img src="../img/home.png" alt="tasto_home" class="home"></a>
 
     <h2 class="mod">Articoli Disponibili</h2>
+
+    <a href="cart.php"><img src="../img/cart_white.png" alt="tasto_cart" class="carrello"></a>
+
     <h3 class="mod1">GIOCHI</h2>
     <h4 class="mod2">CONSOLE</h2>
     <h5 class="mod3">MANGA</h2>
@@ -58,16 +61,19 @@
             }
  
             while ($row = mysqli_fetch_assoc($result)) {
-        ?>
-      
-        <div class="articoli">
-            <a href="<?php echo ($row['path_info']); ?>">
-            <img src="<?php echo ($row['path_foto']); ?>"  class="card" ></img></a>
-        </div>
-
-        <?php
-          }
-        ?>
+                ?>
+                      <div class="articoli">
+                        <img src="../img/<?php echo ($row['id_articolo']); ?>.png" class="card"></img>
+                        <p class="prezzo"><?php echo ($row['prezzo']); ?> &euro;</p>
+                        <form class="ca" action="articoli.php#articoli<?php echo ($row['id_articolo']); ?>" method="post">
+                        <input type="hidden" name="id_articolo" value="<?php echo ($row['id_articolo']); ?>" />
+                          <input  type="number" name="quantita" value="0" min="0" step="1" size="3" max="99" />
+                          <button type="submit" name="azione" value="aggiungi" class="carr">Aggiungi</button>
+                        </form>
+                      </div>
+                <?php
+                  }
+                ?>
     </div>
 
     </body>

@@ -1,5 +1,4 @@
 <?php
-    // ini_set('display_errors', 1);     indica il tipo di errore
     require_once('connection.php');
 
     $email = $connessione->real_escape_string($_POST['email']);
@@ -8,7 +7,7 @@
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
     if(empty($username) || empty($email) || empty($password)) {
-            header("Location:../PHP/registrazione_fallita.php");
+            header("Location:../HTML/registrazione_fallita.html");
             exit;
     }
             
@@ -16,9 +15,9 @@
     
 try {
       $connessione->query($sql);
-      header("Location: ../PHP/registrazione_ok.php");
+      header("Location: ../HTML/login.html");
 } catch (Exception $e) {
-    header("Location: ../PHP/registrazione_ko.php");
+    header("Location: ../HTML/registrazione_ko.html");
     exit;
 }
     
