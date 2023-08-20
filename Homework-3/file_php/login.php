@@ -12,8 +12,9 @@
                 if(password_verify($password, $row['passwd'])){
                     session_start();
                     $_SESSION['loggato'] = true;
-                    $_SESSION['id']= $row['id'];
                     $_SESSION['username'] = $row['username'];
+                    $_SESSION['crediti'] = $row['crediti'];
+
                     header("Location: ../HTML/index1.html");
                 }
                 else{

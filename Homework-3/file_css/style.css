@@ -399,6 +399,7 @@ margin-left: 50px;
   margin-left: 140px;
 }
 
+
 .c{
   padding-bottom: 15px;
   border-bottom: 1px solid black;
@@ -427,6 +428,13 @@ margin-left: 50px;
 .cart-btn:hover{
   background: grey;
   transition: 0.2s;
+}
+
+.home_acq{
+  width: fit-content;
+  border-radius: 10px;
+  background: lightgrey;
+  margin-top: 20px;
 }
 
 .btn{
@@ -459,7 +467,9 @@ margin-left: 50px;
 .ti{
   margin-left: 200px;
 }
-
+.tii{
+  margin-left: 500px;
+}
 
 .riga li
 {

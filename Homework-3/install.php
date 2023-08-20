@@ -28,7 +28,8 @@ $connessione->select_db($db);
 $sql = "CREATE TABLE IF NOT EXISTS utenti (
     username VARCHAR(50) PRIMARY KEY,
     email VARCHAR(100),
-    passwd VARCHAR(255)
+    passwd VARCHAR(255),
+    crediti INT
 )";
 if ($connessione->query($sql) === TRUE) {
     echo "Tabella 'utenti' creata correttamente\n";
@@ -37,9 +38,9 @@ if ($connessione->query($sql) === TRUE) {
     echo "Errore durante la creazione della tabella 'utenti': " . $connessione->error;
 }
 
-$sql = "INSERT INTO `utenti` (`username`, `email`, `passwd`) VALUES
- ('Lollo', 'lorenzofrancescotti@gmail.com', '" . password_hash('lollo', PASSWORD_DEFAULT) . "'),
- ('Federico', 'federico@gmail.com', '" . password_hash('roma', PASSWORD_DEFAULT) . "')";
+$sql = "INSERT INTO `utenti` (`username`, `email`, `passwd`,`crediti`) VALUES
+ ('Lollo', 'lorenzofrancescotti@gmail.com', '" . password_hash('lollo', PASSWORD_DEFAULT) . "','1000'),
+ ('Federico', 'federico@gmail.com', '" . password_hash('roma', PASSWORD_DEFAULT) . "','1000')";
  if ($connessione->query($sql) === TRUE) {
     echo "Tabella 'utenti' popolata correttamente\n";
 } else {

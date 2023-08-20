@@ -14,6 +14,9 @@ if (!isset($_POST['azione'])) {
 
   unset($_SESSION['carrello'][$id_articolo_scelto]);
 }
+if (isset($_SESSION['crediti'])) {
+  $crediti = $_SESSION['crediti'];
+}
 ?>
 
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -44,7 +47,6 @@ if (!isset($_POST['azione'])) {
       $nome = (string)$prodotti->nome;
       $prezzo = (integer)$prodotti->prezzo;
   
-    
       if (!isset($_SESSION['carrello'][$id_articolo])) {
         continue;
       }
@@ -55,6 +57,7 @@ if (!isset($_POST['azione'])) {
       }
 
       $totale += $quantita * $prezzo;
+     
 ?>
         <li><?php echo($nome); ?>, <?php echo($prezzo); ?> &euro;
           <form class="c" action="cart.php" method="post">
@@ -78,7 +81,12 @@ if (!isset($_POST['azione'])) {
 ?>
 
         <b>Totale</b>:
+      
         <span class="prezzo"><?php echo($totale); ?>&euro;</span>
+        <br></br>
+        <b>Crediti disponibili</b>: 
+        <span class="prezzo"><?php echo($crediti); ?>&euro;</span>
+    
       </p>
     </div>
 
@@ -88,7 +96,7 @@ if (!isset($_POST['azione'])) {
         <form action="acquisto.php" method="post"> 
   <input type="submit" name="conferma" value="Conferma acquisto" class="btn" />
 </form>
-
+  </div>
    
 </body>
 
