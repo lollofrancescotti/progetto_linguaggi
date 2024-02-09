@@ -1,4 +1,5 @@
 <?php 
+    session_start();
     require_once('connection.php');
 
     $email = $connessione->real_escape_string($_POST['email']);
@@ -11,14 +12,13 @@
                 $row = $result->fetch_array(MYSQLI_ASSOC);
                 
                 // Confronto diretto delle password (senza hashing)
-                if($password === $row['passwd']){
+                if(password_verify($password, $row['passwd'])){
                     // Verifica il campo 'ban'
                     if($row['ban'] == 1){
-                        header("Location: ../html/utente_bannato.html"); // Reindirizza a pagina di errore ban
+                        header("Location: ../php/utente_bannato.php"); // Reindirizza a pagina di errore ban
                         exit;
                     }
-
-                    session_start();
+                     
                     $_SESSION['loggato'] = true;
                     $_SESSION['email'] = $row['email'];
                     $_SESSION['crediti'] = $row['crediti'];
@@ -29,13 +29,13 @@
                     
 
 
-                    header("Location: ../html/index_cliente.html");
+                    header("Location: ../php/index.php");
                 } else {
-                    header("Location: ../html/login_ko.html");
+                    header("Location: ../php/login_ko.php");
                     exit;
                 }
             } else {
-                header("Location: ../html/login_ko.html");
+                header("Location: ../php/login_ko.php");
                 exit;
             }
         } else {

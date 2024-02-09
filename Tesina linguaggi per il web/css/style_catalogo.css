@@ -7,7 +7,6 @@ body{
 }
 
 .prodotto{
-    height: 60vh;
     width: 90%;
     margin: 3vh auto;
     border: 3px solid #011050;
@@ -15,61 +14,63 @@ body{
     border-radius: 20px;
 }
 
-.nome{
+.nome {
     margin-top: 5vh;
-    margin-bottom: 5vh;
+    margin-bottom: 10vh;
     width: fit-content;
-    margin-left: 130vh;
+    margin-left: auto;
+    margin-right: auto;
     color: #011050;
     border-bottom: 1px solid #011050;
 }
 
+.table {
+    width: 95%;
+    border-collapse: collapse; /* Unisce i bordi delle celle */
+    table-layout: fixed; /* Imposta la larghezza delle colonne come uniforme */
+    margin-bottom: 5vh;
+}
+
+td {
+    padding: 10px;
+    text-align: center;
+    box-sizing: border-box; /* Include padding e bordo nella larghezza totale */
+}
+
 .des{
     font-size: 20px;
-    margin-left: 122vh;
-    max-width: 300px;
-    word-wrap: break-word;
     overflow: hidden;
-    height: 25vh;
-    margin-bottom: 5vh;
     color: #011050;
 }
 
 .prezzo{
     margin-top: 5vh;
     font-size: 25px;
-    margin-left: 142vh;
-    width: fit-content;
+    overflow: hidden;
     color: #011050;
-}
-
-.img{
-    margin-bottom: 8vh;
-    margin-top: -8vh;
 }
 
 .box{
-    margin-left: 30vh;
-    width: 13.5vw;
-    margin-top: -30.5vh;
-    color: #011050;
+    max-width: 300px;
+    max-height: 300px;
+    margin: auto;
 }
 
-.box:hover{
-    transform: scale(1.1);
-    transition: 0.5s;
+.img{
+    max-width: 500px;
+    max-height: 500px;
 }
+
 
 #cart{
     color: #011050;
-    margin-left: 150vh;
-   font-size: 50px;
-   margin-top: -10vh;
+    font-size: 50px;
 }
 
 #simbolo_recensione{
     color: #011050;
-    margin-left: 2vh;
+    margin-left: 1vh;
+    margin-right: 1vh;
 }
 
 #simbolo_recensione:hover{

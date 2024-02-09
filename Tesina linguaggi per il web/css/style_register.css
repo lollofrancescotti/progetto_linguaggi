@@ -44,14 +44,14 @@ body{
 }
 
 .nome{
-    z-index: 99;
+    z-index: 2;
     margin-left: -400px;
 }
 
 
 .cognome{
     margin-top: -70px;
-    z-index: 99;
+    z-index: 2;
     margin-left: 470px;
 }
 
@@ -68,7 +68,7 @@ body{
 }
 
 .email{
-z-index: 99;
+z-index: 2;
 margin-top: -73px;
 margin-left: 470px;
 }
@@ -79,7 +79,7 @@ margin-left: -400px;
 }
 
 .cf{
-z-index: 99;
+z-index: 2;
 margin-top: -75px;
 margin-left: 470px;
 }
@@ -90,7 +90,7 @@ margin-left: -400px;
 }
 
 .password{
-    z-index: 99;
+    z-index: 2;
     margin-top: -74px;
     margin-left: 470px;
 }
@@ -181,4 +181,56 @@ margin-left: -400px;
     z-index: 2;
     margin-left: 33vw;
     margin-top: 5vh;
+}
+
+h2 {
+    color: red;
+    text-align: center;
+    margin-bottom: 5vh;
+}
+
+#simbolo{
+    color: #0021b4;
+    margin-left: 1vh;
+    margin-right: 1vh;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  text-align: left; /* Imposta l'allineamento del testo a sinistra */
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  background-color: #00b7ff;
+  color: #011050;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  z-index: 99;
+  top: 100%; 
+  left: 50%;
+  margin-left: -60px; /* Regola la posizione del tooltip in base alla larghezza desiderata */
+  opacity: 0;
+  transition: opacity 0.3s;
+
+  font-size: 15px;
+
+  width: 300px;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+li{
+    text-align: left;
+}
+
+ol {
+    list-style-type: decimal;
 }

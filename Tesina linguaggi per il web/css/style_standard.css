@@ -63,7 +63,7 @@ th {
     background: #0021b4;
     padding: 10px;
     border: 2px solid #011050;
-    margin: auto; /* Aggiungi questa riga */
+    margin: auto;
 }
 
 .btn:hover{
@@ -74,7 +74,7 @@ th {
 .titolo{
     margin-bottom: -5vh;
     color: #011050;
-    text-align: center; /* Centra il testo orizzontalmente */
+    text-align: center;
 }
 
 .contenitore{
@@ -87,16 +87,20 @@ th {
 
 #edit{
     cursor: pointer;
-   color: #0021b4;
+    color: #0021b4;
+    vertical-align: middle;
 }
 
 #done{
     cursor: pointer;
-   color: #0021b4;
+    color: #0021b4;
+    vertical-align: middle;
 }
 
 .done{
-background: none;
+    cursor: pointer;    
+    color: #0021b4;
+    background: none;
     border: none;
 }
 
@@ -125,4 +129,10 @@ background: none;
 
 .up{
     margin-bottom: 7vh;
+}
+
+h2 {
+    color: red;
+    text-align: center;
+    margin-bottom: 5vh;
 }

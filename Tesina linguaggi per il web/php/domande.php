@@ -4,11 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recensioni Prodotti</title>
-    <link rel="stylesheet" href="../css/style_domande_risposte.css"> <!-- Aggiungi il percorso corretto al tuo file CSS -->
+    <link rel="stylesheet" href="../css/style_standard.css">
+    <link rel="stylesheet" href="../css/style_catalogo.css">
+    <link rel="stylesheet" href="../css/style_search.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="../css/style_header.css">
+    <?php
+        include('../res/header.php');
+    ?>
 </head>
 <body>
-
+<div class="cont">
 <?php
 if(isset($_GET['tipologia']) && isset($_GET['id_prodotto'])){
     $tipologia = $_GET['tipologia'];
@@ -17,19 +23,18 @@ if(isset($_GET['tipologia']) && isset($_GET['id_prodotto'])){
 }
 ?>
 
-<div class="home">
-    <a href="catalogo_utente_<?php echo $tipologia; ?>.php">             
-        <span id="casa" class="material-symbols-outlined">home</span>
-    </a>
-</div>
-
 <?php
        require_once('../res/connection.php');
-session_start();
+       if(isset($_SESSION['loggato'])){
+        $id_utente = $_SESSION['id'];
+        $gestore = $_SESSION['gestore'];
+        $admin = $_SESSION['ammin'];
+        $utente = $_SESSION['utente'];
+            if($utente == 1){ 
 
 if (!isset($_SESSION['email'])) {
     // L'utente non è autenticato, puoi reindirizzarlo alla pagina di login o fare altre azioni
-    header("Location: ../html/login_cliente.html");
+    header("Location: login_cliente.php");
     exit();
 }else{
     $email = $_SESSION['email'];
@@ -53,14 +58,16 @@ if(isset($_SESSION['id'])){
 
 
 if ($domande->length > 0) {
-    echo '<h1>Domande Prodotto: ' . $nome . '</h1>';
+    echo '<h1 class="titolo">Domande Prodotto: ' . $nome . '</h1>';
     echo '<table>';
 
 
     foreach ($domande as $domanda) {    
-        echo '<tr>
-        <th>Autore Domanda</th><th>Domanda</th><th>Voto Utilità</th><th>Voto Supporto</th><th>Valutazione</th><th>Rispondi</th>
-        </tr>';
+        $id_utente_domanda = $domanda->getAttribute("id_utente");
+        if($id_utente == $id_utente_domanda){
+            echo '<tr>';
+        echo '<th>Gestisci Domanda</th><th>Autore Domanda</th><th>Domanda</th><th>Voto Utilità</th><th>Voto Supporto</th><th>Valutazione</th><th>Rispondi</th>';
+        echo '</tr>';
         
         $utilitaNode = $xpath->query("utilita/valore[@id_utente='$idUtenteSessione']", $domanda)->item(0);
         $supportoNode = $xpath->query("supporto/valore[@id_utente='$idUtenteSessione']", $domanda)->item(0);
@@ -72,15 +79,55 @@ if ($domande->length > 0) {
         $id_domanda = $domanda->getElementsByTagName("id_domanda")->item(0)->nodeValue;
         $autoreDomanda = $domanda->getElementsByTagName("autore")->item(0)->nodeValue;
         $testoDomanda = $domanda->getElementsByTagName("testo")->item(0)->nodeValue;
-    
+        
         echo '<tr>';
-        echo '<td>' . $autoreDomanda . '</td>';
+        echo '<td>';
+        echo '<p>';
+        echo '<a href="elimina_dom_risp.php?id_domanda=' . urlencode($id_domanda) . '&testo_domanda=' . urlencode($testoDomanda) . '&id_prodotto=' . urlencode($id_prodotto) . '"><span id="simbolo_recensione" class="material-symbols-outlined">delete</span></a>';
+        echo '</p>';
+        echo '</td>';
+        echo '<td><strong>' . $autoreDomanda . '</strong></td>';
+        echo '<td>' . $testoDomanda . '</td>'; 
+        echo '<td>';
+        echo '---';
+        echo '</td>'; 
+        echo '<td>';
+        echo '---';
+        echo '</td>';
+        echo '<td>';
+        echo '---';
+        echo '</td>';
+        echo '<td>';
+        echo '---';
+        echo '</td>';
+        }
+ else {
+        echo '<tr>';
+        echo '<th>Gestisci Domanda</th><th>Autore Domanda</th><th>Domanda</th><th>Voto Utilità</th><th>Voto Supporto</th><th>Valutazione</th><th>Rispondi</th>';
+        echo '</tr>';
+        
+        $utilitaNode = $xpath->query("utilita/valore[@id_utente='$idUtenteSessione']", $domanda)->item(0);
+        $supportoNode = $xpath->query("supporto/valore[@id_utente='$idUtenteSessione']", $domanda)->item(0);
+
+        // Ottieni i valori di utilità e supporto o imposta "N/A" se non presenti
+        $utilitaValue = $utilitaNode ? $utilitaNode->nodeValue : "N/A";
+        $supportoValue = $supportoNode ? $supportoNode->nodeValue : "N/A";
+
+        $id_domanda = $domanda->getElementsByTagName("id_domanda")->item(0)->nodeValue;
+        $autoreDomanda = $domanda->getElementsByTagName("autore")->item(0)->nodeValue;
+        $testoDomanda = $domanda->getElementsByTagName("testo")->item(0)->nodeValue;
+        
+        echo '<tr>';
+        echo '<td>';
+        echo '<p>';
+        echo '<a href="segnalazione.php?id_domanda=' . urlencode($id_domanda) . '&testo_domanda=' . urlencode($testoDomanda) . '&id_prodotto=' . urlencode($id_prodotto) . '"><span id="simbolo_recensione" class="material-symbols-outlined">report</span></a>';
+        echo '</p>';
+        echo '</td>';
+        echo '<td><strong>' . $autoreDomanda . '</strong></td>';
         echo '<td>' . $testoDomanda . '</td>'; 
         echo '<td>' . $utilitaValue . '</td>';
         echo '<td>' . $supportoValue . '</td>';
         
-
-
         // Ottieni l'id_utente dai nodi "valore" all'interno degli elementi "utilita" e "supporto"
         $utilitaIdUtente = $utilitaNode ? $utilitaNode->getAttribute("id_utente") : "N/A";
         $supportoIdUtente = $supportoNode ? $supportoNode->getAttribute("id_utente") : "N/A";
@@ -89,19 +136,19 @@ if ($domande->length > 0) {
             echo '<td><p><span id="ver" class="material-symbols-outlined">verified</span></p></td>';
         }  else {
          // Colonna per i pulsanti di voto delle domande
-        echo '<td class="voting-buttons">';
-        echo '<form action="domande_utilita_supporto.php" method="post">';
+        echo '<td>';
+        echo '<form action="../res/domande_utilita_supporto.php" method="post">';
         echo '<input type="hidden" name="id_domanda" value="' . $id_domanda . '"/>';
         echo '<input type="hidden" name="id_prodotto" value="' . $id_prodotto . '"/>';
         echo '<input type="hidden" name="tipologia" value="' . $tipologia . '"/>';
     
-        echo '<label class="uti" for="votoUtilita">Utilità (da 1 a 5): </label>';
-        echo '<input class="util" type="number" name="votoUtilita" min="1" max="5" required/><br>';
+        echo '<label class="titolo" for="votoUtilita">Utilità (da 1 a 5): </label>';
+        echo '<input class="input" type="number" name="votoUtilita" min="1" max="5" required/><br>';
     
-        echo '<label for="votoSupporto">Supporto (da 1 a 3): </label>';
-        echo '<input type="number" name="votoSupporto" min="1" max="3" required/>';
+        echo '<label class="titolo" for="votoSupporto">Supporto (da 1 a 3): </label>';
+        echo '<input class="input" type="number" name="votoSupporto" min="1" max="3" required/>';
     
-        echo '<button type="submit" name="vota"><span id="done" title="Invia" class="material-symbols-outlined">
+        echo '<button class="done" type="submit" name="vota"><span id="done" title="Invia" class="material-symbols-outlined">
         done_outline
         </span></button>';
         echo '</form>';
@@ -110,29 +157,28 @@ if ($domande->length > 0) {
         }
         echo '<td>';
         // Form per rispondere alla domanda
-        echo '<form action="risposte.php" method="post">';
+        echo '<form action="../res/risposte.php" method="post">';
         echo '<input type="hidden" name="id_prodotto" value="' . $id_prodotto . '"/>';
         echo '<input type="hidden" name="tipologia" value="' . $tipologia . '"/>';
         echo '<input type="hidden" name="nome" value="' . $nome . '"/>';            
         echo '<input type="hidden" name="autore" value="' . $email . '"/>';
         echo '<input type="hidden" name="id_domanda" value="' . $id_domanda . '"/>';
-        echo '<textarea class="text" name="risposta" rows="2" cols="30" placeholder="Inserisci la risposta" required></textarea>';
-        echo '<div class="send">';
-        echo '<input class="button" type="submit" value="Invia risposta">';
-        echo '</div>';
+        echo '<input class="input" name="risposta" rows="2" cols="30" placeholder="Inserisci la risposta" required></input>';
+        echo '<button class="btn" type="submit">Invia risposta</button>';
+        
+
         echo '</form>';
-    
-       
-    
         echo '</tr>';
-    
+ }
+ 
         // Mostra le risposte
         $risposte = $domanda->getElementsByTagName('risposta');
         if ($risposte->length > 0) {
-            echo '<tr><th class="risp">Autore Risposta</th><th class="risp">Risposta</th><th>Voto Utilità</th><th>Voto Supporto</th><th class="risp">Valutazione</th></tr>';
+            echo '<tr><th class="risp">Gestisci Risposta</th><th class="risp">Autore Risposta</th><th class="risp">Risposta</th><th>Voto Utilità</th><th>Voto Supporto</th><th class="risp">Valutazione</th></tr>';
         
             foreach ($risposte as $risposta) {
-
+                $id_utente_risposta=$risposta->getAttribute('id_utente');
+                if($id_utente_risposta == $id_utente){
                 $utilitaNode = $xpath->query("utilita/valore[@id_utente='$idUtenteSessione']", $risposta)->item(0);
                 $supportoNode = $xpath->query("supporto/valore[@id_utente='$idUtenteSessione']", $risposta)->item(0);
             
@@ -146,8 +192,52 @@ if ($domande->length > 0) {
                 $oraRisposta = $risposta->getElementsByTagName("ora")->item(0)->nodeValue;
                 $testoRisposta = $risposta->getElementsByTagName("testo")->item(0)->nodeValue;
         
+                
                 // Nuova riga per ogni risposta
+              // Nuova riga per ogni risposta
                 echo '<tr>';
+                echo '<td>';
+                echo '<p>';
+                echo '<a href="elimina_dom_risp.php?id_prodotto=' . urlencode($id_prodotto) . '&id_risposta=' . urlencode($id_risposta) . '&testo_risposta=' . urlencode($testoRisposta) . '"><span id="simbolo_recensione" class="material-symbols-outlined">delete</span></a>';
+                echo '</p>';
+                echo '</td>';          
+                echo '<td>';
+                echo '<strong>' . $autoreRisposta . '</strong> ha risposto il ' . $dataRisposta . ' alle ' . $oraRisposta;
+                echo '</td>';
+                echo '<td>';
+                echo $testoRisposta;
+                echo '</td>';
+                echo '<td>';
+                echo '---';
+                echo '</td>'; echo '<td>';
+                echo '---';
+                echo '</td>'; echo '<td>';
+                echo '---';
+                echo '</td>'; 
+                
+            } else {
+                $utilitaNode = $xpath->query("utilita/valore[@id_utente='$idUtenteSessione']", $risposta)->item(0);
+                $supportoNode = $xpath->query("supporto/valore[@id_utente='$idUtenteSessione']", $risposta)->item(0);
+            
+                // Ottieni i valori di utilità e supporto o imposta "N/A" se non presenti
+                $utilitaValue = $utilitaNode ? $utilitaNode->nodeValue : "N/A";
+                $supportoValue = $supportoNode ? $supportoNode->nodeValue : "N/A";
+            
+                $id_risposta = $risposta->getElementsByTagName("id_risposta")->item(0)->nodeValue;
+                $autoreRisposta = $risposta->getElementsByTagName("autore")->item(0)->nodeValue;
+                $dataRisposta = $risposta->getElementsByTagName("data")->item(0)->nodeValue;
+                $oraRisposta = $risposta->getElementsByTagName("ora")->item(0)->nodeValue;
+                $testoRisposta = $risposta->getElementsByTagName("testo")->item(0)->nodeValue;
+        
+                
+                // Nuova riga per ogni risposta
+              // Nuova riga per ogni risposta
+                echo '<tr>';
+                echo '<td>';
+                echo '<p>';
+                echo '<a href="segnalazione.php?id_prodotto=' . urlencode($id_prodotto) . '&id_risposta=' . urlencode($id_risposta) . '&testo_risposta=' . urlencode($testoRisposta) . '"><span id="simbolo_recensione" class="material-symbols-outlined">report</span></a>';
+                echo '</p>';
+                echo '</td>';          
                 echo '<td>';
                 echo '<strong>' . $autoreRisposta . '</strong> ha risposto il ' . $dataRisposta . ' alle ' . $oraRisposta;
                 echo '</td>';
@@ -168,33 +258,321 @@ if ($domande->length > 0) {
             echo '<p><span id="ver" class="material-symbols-outlined">verified</span></p>';
         }  else {
                 // Colonna per i pulsanti di voto delle risposte
-                echo '<div class="voting-buttons">';
-                echo '<form action="risposte_utilita_supporto.php" method="post">';
+                echo '<div>';
+                echo '<form action="../res/risposte_utilita_supporto.php" method="post">';
                 echo '<input type="hidden" name="id_domanda" value="' . $id_domanda . '"/>';
                 echo '<input type="hidden" name="id_risposta" value="' . $id_risposta . '"/>';
                 echo '<input type="hidden" name="id_prodotto" value="' . $id_prodotto . '"/>';
                 echo '<input type="hidden" name="tipologia" value="' . $tipologia . '"/>';
                 echo '<input type="hidden" name="nome" value="' . $nome . '"/>';            
-                echo '<label class="uti" for="votoUtilita">Utilità (da 1 a 5): </label>';
-                echo '<input class="util" type="number" name="votoUtilita" min="1" max="5" required/><br>';
-        
-                echo '<label for="votoSupporto">Supporto (da 1 a 3): </label>';
-                echo '<input type="number" name="votoSupporto" min="1" max="3" required/>';
-        
-                echo '<button type="submit" name="vota"><span id="done" title="Invia" class="material-symbols-outlined">
+
+                echo '<label class="titolo" for="votoUtilita">Utilità (da 1 a 5): </label>';
+                echo '<input class="input" type="number" name="votoUtilita" min="1" max="5" required/><br>';
+            
+                echo '<label class="titolo" for="votoSupporto">Supporto (da 1 a 3): </label>';
+                echo '<input class="input" type="number" name="votoSupporto" min="1" max="3" required/>';
+            
+                echo '<button class="done" type="submit" name="vota"><span id="done" title="Invia" class="material-symbols-outlined">
                 done_outline
                 </span></button>';
                 echo '</form>';
-        }
+                   }
                 echo '</div>';
         
                 echo '</td>';
                 echo '</tr>';
+            
             }
+          }
         }
-            }
-        } else {
-            echo '<tr><td colspan="4"><p>Nessuna risposta disponibile.</p></td></tr>';
+      }
+    } else {
+            echo '<tr><td colspan="4"><p class="titolo">Nessuna risposta disponibile.</p></td></tr>';
         }
+    }
+     elseif($gestore == 1 || $admin == 1){
+        
+if (!isset($_SESSION['email'])) {
+    // L'utente non è autenticato, puoi reindirizzarlo alla pagina di login o fare altre azioni
+    header("Location: login_cliente.php");
+    exit();
+}else{
+    $email = $_SESSION['email'];
+
+}
+
+if(isset($_SESSION['id'])){
+   $idUtenteSessione = $_SESSION['id'];
+}
+
+if(isset($_GET['id_prodotto'])){
+    $id_prodotto = $_GET['id_prodotto']; 
+}
+
+
+    // Carica il file XML del catalogo
+    $xmlFile = '../xml/catalogo_prodotti.xml';
+    $dom = new DOMDocument();
+    $dom->load($xmlFile);
+
+    // Trova tutti gli elementi 'domande' nel file XML relativi all'id_prodotto desiderato
+    $xpath = new DOMXPath($dom);
+    $domande = $xpath->query("//domande/domanda[@id_prodotto='$id_prodotto']");
+
+// Mostra le domande e i form di risposta in una tabella
+
+
+if(isset($_GET['nome']) && isset($_GET['tipologia'])){
+    
+    $nome = $_GET['nome'];
+    $tipologia = $_GET['tipologia'];
+
+}
+
+if ($domande->length > 0) {
+    echo '<h1 class="titolo">Domande Prodotto: ' . $nome . '</h1>';
+    echo '<table>';
+
+
+    foreach ($domande as $domanda) { 
+        $id_utente_domanda = $domanda->getAttribute("id_utente");
+        if($id_utente == $id_utente_domanda){
+
+            echo '<tr>';
+        echo '<th>Gestisci Domanda</th><th>Autore Domanda</th><th>Domanda</th><th>Voto Utilità</th><th>Voto Supporto</th><th>Valutazione</th><th>Rispondi</th>';
+        echo '</tr>';
+        
+        $utilitaNode = $xpath->query("utilita/valore[@id_utente='$idUtenteSessione']", $domanda)->item(0);
+        $supportoNode = $xpath->query("supporto/valore[@id_utente='$idUtenteSessione']", $domanda)->item(0);
+
+        // Ottieni i valori di utilità e supporto o imposta "N/A" se non presenti
+        $utilitaValue = $utilitaNode ? $utilitaNode->nodeValue : "N/A";
+        $supportoValue = $supportoNode ? $supportoNode->nodeValue : "N/A";
+
+        $id_domanda = $domanda->getElementsByTagName("id_domanda")->item(0)->nodeValue;
+        $autoreDomanda = $domanda->getElementsByTagName("autore")->item(0)->nodeValue;
+        $testoDomanda = $domanda->getElementsByTagName("testo")->item(0)->nodeValue;
+        
+        echo '<tr>';
+        echo '<td>';
+        echo '<p>';
+        echo '<a href="elimina_dom_risp.php?id_domanda=' . urlencode($id_domanda) . '&testo_domanda=' . urlencode($testoDomanda) . '&id_prodotto=' . urlencode($id_prodotto) . '"><span id="simbolo_recensione" class="material-symbols-outlined">delete</span></a>';
+        echo '</p>';
+        echo '</td>';
+        echo '<td><strong>' . $autoreDomanda . '</strong></td>';
+        echo '<td>' . $testoDomanda . '</td>'; 
+        echo '<td>';
+        echo '---';
+        echo '</td>'; 
+        echo '<td>';
+        echo '---';
+        echo '</td>';
+        echo '<td>';
+        echo '---';
+        echo '</td>';
+        echo '<td>';
+        echo '---';
+        echo '</td>';
+        }
+ else {
+        echo '<tr>';
+        echo '<th>Gestisci Domanda</th><th>Autore Domanda</th><th>Domanda</th><th>Voto Utilità</th><th>Voto Supporto</th><th>Valutazione</th><th>Rispondi</th>';
+        echo '</tr>';
+        
+        $utilitaNode = $xpath->query("utilita/valore[@id_utente='$idUtenteSessione']", $domanda)->item(0);
+        $supportoNode = $xpath->query("supporto/valore[@id_utente='$idUtenteSessione']", $domanda)->item(0);
+
+        // Ottieni i valori di utilità e supporto o imposta "N/A" se non presenti
+        $utilitaValue = $utilitaNode ? $utilitaNode->nodeValue : "N/A";
+        $supportoValue = $supportoNode ? $supportoNode->nodeValue : "N/A";
+
+        $id_domanda = $domanda->getElementsByTagName("id_domanda")->item(0)->nodeValue;
+        $autoreDomanda = $domanda->getElementsByTagName("autore")->item(0)->nodeValue;
+        $testoDomanda = $domanda->getElementsByTagName("testo")->item(0)->nodeValue;
+        
+        echo '<tr>';
+        echo '<td>';
+        echo '<form action="eleva_faq.php" method="post">';
+        echo '<input type="hidden" name="testo_domanda" value="' . htmlspecialchars($testoDomanda) . '"/>';
+        echo '<input type="hidden" name="id_domanda" value="' . $id_domanda . '"/>';
+        echo '<input type="hidden" name="id_prodotto" value="' . $id_prodotto . '"/>';
+        echo '<button class="done" type="submit" name="vota"><span id="done" title="Invia" class="material-symbols-outlined">edit</span></button>';
+        echo '</form>';
+        echo '<a href="elimina_dom_risp.php?id_domanda=' . $id_domanda . '&id_prodotto=' . $id_prodotto . '&nome=' . $nome . '&tipologia=' . $tipologia . '"><span style="margin-top:10px;" id="done" class="material-symbols-outlined">delete</span></a>';
+        echo '</td>';
+        echo '<td><strong>' . $autoreDomanda . '</strong></td>';
+        echo '<td>' . $testoDomanda . '</td>'; 
+        echo '<td>' . $utilitaValue . '</td>';
+        echo '<td>' . $supportoValue . '</td>';
+        // Ottieni l'id_utente dai nodi "valore" all'interno degli elementi "utilita" e "supporto"
+        $utilitaIdUtente = $utilitaNode ? $utilitaNode->getAttribute("id_utente") : "N/A";
+        $supportoIdUtente = $supportoNode ? $supportoNode->getAttribute("id_utente") : "N/A";
+
+        if ($utilitaIdUtente == $_SESSION['id'] || $supportoIdUtente == $_SESSION['id']) {
+            echo '<td><p><span id="ver" class="material-symbols-outlined">verified</span></p></td>';
+        }  else {
+         // Colonna per i pulsanti di voto delle domande
+        echo '<td>';
+        echo '<form action="../res/domande_utilita_supporto.php" method="post">';
+        echo '<input type="hidden" name="id_domanda" value="' . $id_domanda . '"/>';
+        echo '<input type="hidden" name="id_prodotto" value="' . $id_prodotto . '"/>';
+        echo '<input type="hidden" name="tipologia" value="' . $tipologia . '"/>';
+    
+        echo '<label class="titolo" for="votoUtilita">Utilità (da 1 a 5): </label>';
+        echo '<input class="input" type="number" name="votoUtilita" min="1" max="5" required/><br>';
+    
+        echo '<label class="titolo" for="votoSupporto">Supporto (da 1 a 3): </label>';
+        echo '<input class="input" type="number" name="votoSupporto" min="1" max="3" required/>';
+    
+        echo '<button class="done" type="submit" name="vota"><span id="done" title="Invia" class="material-symbols-outlined">
+        done_outline
+        </span></button>';
+        echo '</form>';
+   
+        echo '</td>';
+        }
+        echo '<td>';
+        // Form per rispondere alla domanda
+        echo '<form action="../res/risposte.php" method="post">';
+        echo '<input type="hidden" name="id_prodotto" value="' . $id_prodotto . '"/>';
+        echo '<input type="hidden" name="tipologia" value="' . $tipologia . '"/>';
+        echo '<input type="hidden" name="nome" value="' . $nome . '"/>';            
+        echo '<input type="hidden" name="autore" value="' . $email . '"/>';
+        echo '<input type="hidden" name="id_domanda" value="' . $id_domanda . '"/>';
+        echo '<input class="input" name="risposta" rows="2" cols="30" placeholder="Inserisci la risposta" required></input>';
+        echo '<button class="btn" type="submit">Invia risposta</button>';
+        
+
+        echo '</form>';
+        echo '</tr>';
+ }
  
+        // Mostra le risposte
+        $risposte = $domanda->getElementsByTagName('risposta');
+        if ($risposte->length > 0) {
+            echo '<tr><th class="risp">Gestisci Risposta</th><th class="risp">Autore Risposta</th><th class="risp">Risposta</th><th>Voto Utilità</th><th>Voto Supporto</th><th class="risp">Valutazione</th></tr>';
+        
+            foreach ($risposte as $risposta) {
+                $id_utente_risposta=$risposta->getAttribute('id_utente');
+                if($id_utente_risposta == $id_utente){
+                $utilitaNode = $xpath->query("utilita/valore[@id_utente='$idUtenteSessione']", $risposta)->item(0);
+                $supportoNode = $xpath->query("supporto/valore[@id_utente='$idUtenteSessione']", $risposta)->item(0);
+            
+                // Ottieni i valori di utilità e supporto o imposta "N/A" se non presenti
+                $utilitaValue = $utilitaNode ? $utilitaNode->nodeValue : "N/A";
+                $supportoValue = $supportoNode ? $supportoNode->nodeValue : "N/A";
+            
+                $id_risposta = $risposta->getElementsByTagName("id_risposta")->item(0)->nodeValue;
+                $autoreRisposta = $risposta->getElementsByTagName("autore")->item(0)->nodeValue;
+                $dataRisposta = $risposta->getElementsByTagName("data")->item(0)->nodeValue;
+                $oraRisposta = $risposta->getElementsByTagName("ora")->item(0)->nodeValue;
+                $testoRisposta = $risposta->getElementsByTagName("testo")->item(0)->nodeValue;
+        
+                
+              // Nuova riga per ogni risposta
+                echo '<tr>';
+                echo '<td>';
+                echo '<p>';
+                echo '<a href="elimina_dom_risp.php?id_prodotto=' . urlencode($id_prodotto) . '&id_risposta=' . urlencode($id_risposta) . '&testo_risposta=' . urlencode($testoRisposta) . '"><span id="simbolo_recensione" class="material-symbols-outlined">delete</span></a>';
+                echo '</p>';
+                echo '</td>';          
+                echo '<td>';
+                echo '<strong>' . $autoreRisposta . '</strong> ha risposto il ' . $dataRisposta . ' alle ' . $oraRisposta;
+                echo '</td>';
+                echo '<td>';
+                echo $testoRisposta;
+                echo '</td>';
+                echo '<td>';
+                echo '---';
+                echo '</td>'; echo '<td>';
+                echo '---';
+                echo '</td>'; echo '<td>';
+                echo '---';
+                echo '</td>'; 
+                
+            } else {
+                $utilitaNode = $xpath->query("utilita/valore[@id_utente='$idUtenteSessione']", $risposta)->item(0);
+                $supportoNode = $xpath->query("supporto/valore[@id_utente='$idUtenteSessione']", $risposta)->item(0);
+            
+                // Ottieni i valori di utilità e supporto o imposta "N/A" se non presenti
+                $utilitaValue = $utilitaNode ? $utilitaNode->nodeValue : "N/A";
+                $supportoValue = $supportoNode ? $supportoNode->nodeValue : "N/A";
+            
+                $id_risposta = $risposta->getElementsByTagName("id_risposta")->item(0)->nodeValue;
+                $autoreRisposta = $risposta->getElementsByTagName("autore")->item(0)->nodeValue;
+                $dataRisposta = $risposta->getElementsByTagName("data")->item(0)->nodeValue;
+                $oraRisposta = $risposta->getElementsByTagName("ora")->item(0)->nodeValue;
+                $testoRisposta = $risposta->getElementsByTagName("testo")->item(0)->nodeValue;
+        
+                
+                // Nuova riga per ogni risposta
+                echo '<tr>';
+                echo '<td>';
+                echo '<form action="eleva_faq.php" method="post">';
+                echo '<input type="hidden" name="testo_risposta" value="' . htmlspecialchars($testoRisposta) . '"/>';
+                echo '<input type="hidden" name="id_risposta" value="' . $id_risposta . '"/>';
+                echo '<input type="hidden" name="id_domanda" value="' . $id_domanda . '"/>';
+                echo '<input type="hidden" name="id_prodotto" value="' . $id_prodotto . '"/>';
+                echo '<input type="hidden" name="testo_risposta" value="' . htmlspecialchars($testoRisposta) . '"/>';
+                echo '<input type="hidden" name="testo_domanda" value="' . htmlspecialchars($testoDomanda) . '"/>';
+                echo '<button class="done" type="submit" name="vota"><span id="done" title="Invia" class="material-symbols-outlined">edit</span></button>';
+                echo '</form>';
+                echo '<a href="elimina_dom_risp.php?id_risposta=' . $id_risposta . '&id_domanda=' . $id_domanda . '&id_prodotto=' . $id_prodotto . '&nome=' . $nome . '&tipologia=' . $tipologia . '">';             
+                 echo '<span style="margin-top:10px;" id="done" class="material-symbols-outlined">delete</span>';
+                echo '</a>';              
+                  echo '</td>';          
+                  echo '<td>';
+                  echo '<strong>' . $autoreRisposta . '</strong> ha risposto il ' . $dataRisposta . ' alle ' . $oraRisposta;
+                  echo '</td>';
+                  echo '<td style="max-width:300px; word-wrap: break-word;">';
+                  echo $testoRisposta;
+                  echo '</td>';
+                  echo '<td>' . $utilitaValue . '</td>';
+                  echo '<td>' . $supportoValue . '</td>';
+                  echo '<td>';
+  
+                
+        // Ottieni l'id_utente dai nodi "valore" all'interno degli elementi "utilita" e "supporto"
+        $utilitaIdUtente = $utilitaNode ? $utilitaNode->getAttribute("id_utente") : "N/A";
+        $supportoIdUtente = $supportoNode ? $supportoNode->getAttribute("id_utente") : "N/A";
+
+
+        if ($utilitaIdUtente == $_SESSION['id'] || $supportoIdUtente == $_SESSION['id']) {
+            echo '<p><span id="ver" class="material-symbols-outlined">verified</span></p>';
+        }  else {
+                // Colonna per i pulsanti di voto delle risposte
+                echo '<div>';
+                echo '<form action="../res/risposte_utilita_supporto.php" method="post">';
+                echo '<input type="hidden" name="id_domanda" value="' . $id_domanda . '"/>';
+                echo '<input type="hidden" name="id_risposta" value="' . $id_risposta . '"/>';
+                echo '<input type="hidden" name="id_prodotto" value="' . $id_prodotto . '"/>';
+                echo '<input type="hidden" name="tipologia" value="' . $tipologia . '"/>';
+                echo '<input type="hidden" name="nome" value="' . $nome . '"/>';            
+
+                echo '<label class="titolo" for="votoUtilita">Utilità (da 1 a 5): </label>';
+                echo '<input class="input" type="number" name="votoUtilita" min="1" max="5" required/><br>';
+            
+                echo '<label class="titolo" for="votoSupporto">Supporto (da 1 a 3): </label>';
+                echo '<input class="input" type="number" name="votoSupporto" min="1" max="3" required/>';
+            
+                echo '<button class="done" type="submit" name="vota"><span id="done" title="Invia" class="material-symbols-outlined">
+                done_outline
+                </span></button>';
+                echo '</form>';
+                   }
+                echo '</div>';
+        
+                echo '</td>';
+                echo '</tr>';
+            
+            }
+     }}}}  else {
+            echo '<tr><td colspan="4"><p class="titolo">Nessuna risposta disponibile.</p></td></tr>';
+        }
+    }
+}
+
 ?>
+</div>
+</body>
+</html>
