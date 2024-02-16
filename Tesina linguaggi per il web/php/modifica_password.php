@@ -13,8 +13,6 @@
 </head>
 <body>
 
-<div class="cont">
-
 <?php
 require_once('../res/connection.php');
 
@@ -24,7 +22,9 @@ if(isset($_SESSION['errore_preg']) && $_SESSION['errore_preg'] == 'true'){
     echo "<h2>La password non rispetta i criteri di sicurezza!</h2>";
     unset($_SESSION['errore_preg']);
 }    
-
+?>
+<div class="cont">
+<?php
 // Verifica se è stato fornito un ID utente valido
 if (isset($_GET['id']) && is_numeric($_GET['id']) && ($admin == 0)) {
     $id_utente = $_GET['id'];
@@ -37,7 +37,18 @@ if (isset($_GET['id']) && is_numeric($_GET['id']) && ($admin == 0)) {
         $utente = $result->fetch_assoc();
         ?>
  
- <h1 class="titolo">Modifica Password</h1>
+        <h1 class="titolo"><div class="tooltip">
+                    <span class="tooltiptext">LA PASSWORD DEVE SODDISFARE I SEGUENTI REQUISITI:
+                        <ol>
+                            <li>Deve essere lunga almeno 7 caratteri;</li>
+                            <li>Deve contenere almeno una lettera maiuscola e una minuscola;</li>
+                            <li>Deve contenere almeno un numero;</li>
+                            <li>Deve contenere almeno un carattere speciale (!,@,#,$,%,^,&,*).</li>
+                        </ol>       
+                    </span>
+                    <i id="simbolo" class="material-symbols-outlined">info</i>
+                </div>
+            Modifica Password</h1>
         <table>
             <tr>
                 <td colspan="2">
@@ -58,7 +69,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id']) && ($admin == 0)) {
 }
  elseif (isset($_GET['id']) && ($admin == 1)) {
     $id_utente = $_GET['id'];
-    $admin = $_SESSION['admin'];
+    $admin = $_SESSION['ammin'];
 
     // Esegui una query per ottenere i dati dell'utente
     $query = "SELECT * FROM utenti WHERE id = $id_utente";
@@ -69,7 +80,18 @@ if (isset($_GET['id']) && is_numeric($_GET['id']) && ($admin == 0)) {
         $email = $utente['email']; // Ottieni l'email dall'array dell'utente
         ?>
  
- <h1 class="titolo">Modifica Password dell'account '<?php echo $email ?>'</h1>
+ <h1 class="titolo"> <div class="tooltip">
+                    <span class="tooltiptext">LA PASSWORD DEVE SODDISFARE I SEGUENTI REQUISITI:
+                        <ol>
+                            <li>Deve essere lunga almeno 7 caratteri;</li>
+                            <li>Deve contenere almeno una lettera maiuscola e una minuscola;</li>
+                            <li>Deve contenere almeno un numero;</li>
+                            <li>Deve contenere almeno un carattere speciale (!,@,#,$,%,^,&,*).</li>
+                        </ol>       
+                    </span>
+                    <i id="simbolo" class="material-symbols-outlined">info</i>
+                </div>
+    Modifica Password dell'account '<?php echo $email ?>'</h1>
         <table>
             <tr>
                 <td colspan="2">

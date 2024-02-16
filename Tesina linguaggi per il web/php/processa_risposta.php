@@ -6,35 +6,39 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $xmlFile = '../xml/faq.xml';
 
     if (file_exists($xmlFile)) {
-        $xml = simplexml_load_file($xmlFile);
+        $xml = new DOMDocument();
+        $xml->load($xmlFile);
+        $xpath = new DOMXPath($xml);
 
-        foreach ($xml->entry as $entry) {
-            $id = $entry->attributes()->id;
+        $entries = $xpath->query("/faq/entry[@id='$faq_id']");
 
-            if ($id == $faq_id) {
-                // Cerca l'elemento <answers> se esiste già
-                $answers = $entry->xpath('answers');
+        if ($entries->length > 0) {
+            $entry = $entries[0];
 
-                // Verifica se l'elemento <answers> esiste già
-                if (empty($answers)) {
-                    // Se non esiste, crealo e aggiungi la nuova risposta
-                    $answers = $entry->addChild('answers');
-                    $newAnswer = $answers->addChild('answer', $answer_text);
-                    $newAnswer->addAttribute('id', uniqid());
-                } else {
-                    // Se esiste già, rimuovi le risposte esistenti
-                    unset($entry->answers->answer);
+            // Cerca l'elemento <answers> se esiste già
+            $answers = $xpath->query('answers', $entry);
 
-                    // Aggiungi la nuova risposta all'elemento <answers>
-                    $newAnswer = $answers[0]->addChild('answer', $answer_text);
-                    $newAnswer->addAttribute('id', uniqid());
+            // Verifica se l'elemento <answers> esiste già
+            if ($answers->length === 0) {
+                // Se non esiste, crealo e aggiungi la nuova risposta
+                $answers = $entry->appendChild($xml->createElement('answers'));
+                $newAnswer = $answers->appendChild($xml->createElement('answer', $answer_text));
+                $newAnswer->setAttribute('id', uniqid());
+            } else {
+                // Se esiste già, rimuovi le risposte esistenti
+                foreach ($answers[0]->childNodes as $childNode) {
+                    $answers[0]->removeChild($childNode);
                 }
 
-                // Salva le modifiche nel file XML
-                $xml->asXML($xmlFile);
-                header('Location: faq.php');
-                exit();
+                // Aggiungi la nuova risposta all'elemento <answers>
+                $newAnswer = $answers[0]->appendChild($xml->createElement('answer', $answer_text));
+                $newAnswer->setAttribute('id', uniqid());
             }
+
+            // Salva le modifiche nel file XML
+            $xml->save($xmlFile);
+            header('Location: faq.php');
+            exit();
         }
 
         echo "Errore: Domanda non trovata.";

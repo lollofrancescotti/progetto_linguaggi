@@ -24,6 +24,7 @@ $action = $_POST['action'];
 if ($action=="Approva") {
 $xmlFile = '../xml/requests.xml';
 $dom = new DOMDocument();
+$dom->preserveWhiteSpace = false;
 $dom->load($xmlFile);
 
 $requests = $dom->getElementsByTagName('request');
@@ -31,7 +32,7 @@ $requests = $dom->getElementsByTagName('request');
     foreach ($requests as $request) {
         $statusElement = $request->getAttribute('status');
 
-        if ($statusElement == 'pending') {
+        if ($statusElement == 'In Attesa') {
             $emailElement = $request->getElementsByTagName('email')->item(0);
             $importoElement = $request->getElementsByTagName('importo')->item(0);
 
@@ -40,16 +41,21 @@ $requests = $dom->getElementsByTagName('request');
 
             if ($requestEmail == $email && $requestImporto == $importo) {
                 // Aggiorna lo stato della richiesta nel file XML
-                $request->setAttribute('status', 'approved');
+                $request->setAttribute('status', 'Approvato');
+                $dom->normalizeDocument();
+                $dom->formatOutput = true; 
                 $dom->save($xmlFile);
 
                 // Aggiorna i crediti dell'utente nel database
                 $sql_credit_update = "UPDATE utenti SET crediti = crediti + $importo WHERE email = '$email'";
                 if ($connessione->query($sql_credit_update) === TRUE) {
-                    echo '<h1 class="titolo">Richiesta approvata con successo. I crediti sono stati aggiunti all\'account di $email.</h1>';
+                    $_SESSION['successo_richiesta_approvata'] = 'true';
+                    $_SESSION['email'] = $email;
+                    header("Location: menu_richieste_crediti.php");
                 } 
                 else {
-                    echo '<h1 class="titolo">Errore nell\'aggiornamento dei crediti dell\'utente nel database: ' . $connessione->error . '</h1>';
+                    $_SESSION['fallimento_richiesta'] = 'true';
+                    header("Location: menu_richieste_crediti.php");
                 }
 
                 $connessione->close();
@@ -61,6 +67,7 @@ $requests = $dom->getElementsByTagName('request');
 elseif ($action=="Rifiuta") {
     $xmlFile = '../xml/requests.xml';
     $dom = new DOMDocument();
+    $dom->preserveWhiteSpace = false;
     $dom->load($xmlFile);
 
     $requests = $dom->getElementsByTagName('request');
@@ -68,7 +75,7 @@ elseif ($action=="Rifiuta") {
     foreach ($requests as $request) {
         $statusElement = $request->getAttribute('status');
 
-        if ($statusElement == 'pending') {
+        if ($statusElement == 'In Attesa') {
             $emailElement = $request->getElementsByTagName('email')->item(0);
             $importoElement = $request->getElementsByTagName('importo')->item(0);
 
@@ -77,10 +84,13 @@ elseif ($action=="Rifiuta") {
 
             if ($requestEmail == $email && $requestImporto == $importo) {
                 // Aggiorna lo stato della richiesta nel file XML a 'deny'
-                $request->setAttribute('status', 'deny');
+                $request->setAttribute('status', 'Rifiutato');
+                $dom->normalizeDocument();
+                $dom->formatOutput = true; 
                 $dom->save($xmlFile);
 
-                echo '<h1 class="titolo">Richiesta rifiutata con successo!!!</h1>';
+                $_SESSION['successo_richiesta_rifiutata'] = 'true';
+                header("Location: menu_richieste_crediti.php");
                 $connessione->close();
                 exit();
             }

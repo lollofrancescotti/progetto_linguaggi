@@ -1,4 +1,5 @@
 <?php
+
 if (isset($_GET['id_prodotto'])) {
     // Recupera l'id del prodotto dalla query string
     $id_prodotto = $_GET['id_prodotto'];
@@ -41,7 +42,11 @@ if (isset($_GET['id_prodotto'])) {
         include('../res/header.php');
         ?>
     </head>
-    <body>
+    <body><?php
+    if(isset($_SESSION['errore_nome_esistente']) && $_SESSION['errore_nome_esistente'] == 'true'){
+    echo '<h2>Nome prodotto già esistente...</h2>';
+    unset($_SESSION['errore_nome_esistente']);
+}?>
         <div class="cont">
 
     <h1 class="titolo" >Modifica Prodotto</h1>
@@ -61,7 +66,7 @@ if (isset($_GET['id_prodotto'])) {
             </tr>
             <tr>
                 <td><label for="prezzo">Prezzo:</label></td>
-                <td><input class="input" type="text" name="prezzo" value="<?php echo $prezzo; ?>" required></td>
+                <td><input class="input" type="number" name="prezzo" value="<?php echo $prezzo; ?>" min="0" required></td>
             </tr>
             <tr>
                <td><label for="immagine">Immagine:</label></td>

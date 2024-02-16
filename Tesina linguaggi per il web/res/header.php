@@ -73,7 +73,7 @@ $utente = $_SESSION['utente'];
         foreach ($requests as $request) {
             $status = $request->getAttribute('status');
 
-            if ($status == 'pending') {
+            if ($status == 'In Attesa') {
                 $hasPendingRequests = true;
             }
         }
@@ -152,7 +152,7 @@ $utente = $_SESSION['utente'];
         foreach ($segnalazioni as $segnalazione) {
             $status = $segnalazione->getAttribute('status');
 
-            if ($status == 'pending') {
+            if ($status == 'In Attesa') {
                 $hasPendingRequests = true;
             }
         }
@@ -248,13 +248,6 @@ $utente = $_SESSION['utente'];
                     <a href="../php/faq.php" class="stile">
                         <div class="header_menu_link" title="Faq">
                             <span class="material-symbols-outlined">quiz</span>FAQ
-                        </div>
-                    </a>
-                </div>
-                <div class="header_menu_item">
-                    <a href="#" class="stile">
-                        <div class="header_menu_link" title="About us">
-                            <span class="material-symbols-outlined">group</span>ABOUT US
                         </div>
                     </a>
                 </div>

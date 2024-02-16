@@ -50,6 +50,11 @@ th {
     box-shadow: 0 0 5px 0 #0021b4;
 }
 
+#input {
+    width: 80%;
+    text-align: center;
+}
+
 .btn {
     display: flex;
     justify-content: center;
@@ -131,8 +136,70 @@ th {
     margin-bottom: 7vh;
 }
 
-h2 {
+#simbolo_recensione{
+    color: #011050;
+    margin-left: 1vh;
+    margin-right: 1vh;
+}
+
+#simbolo_recensione:hover{
+    color: #0021b4;
+    transition: 0.2s;
+}
+
+h2{
     color: red;
     text-align: center;
     margin-bottom: 5vh;
+}
+
+#successo{
+    color: green;
+}
+
+
+#simbolo{
+    color: #0021b4;
+    margin-left: 1vh;
+    margin-right: 1vh;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  text-align: left; /* Imposta l'allineamento del testo a sinistra */
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  background-color: #00b7ff;
+  color: #011050;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  z-index: 99;
+  top: 100%; 
+  left: 50%;
+  margin-left: -60px; /* Regola la posizione del tooltip in base alla larghezza desiderata */
+  opacity: 0;
+  transition: opacity 0.3s;
+
+  font-size: 15px;
+
+  width: 300px;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+li{
+    text-align: left;
+}
+
+ol {
+    list-style-type: decimal;
 }

@@ -38,6 +38,11 @@
         unset($_SESSION['errore_codice_fiscale']);
         unset($_SESSION['form_codice_fiscale']);
     }
+
+    if(isset($_SESSION['errore_cod']) && $_SESSION['errore_cod'] == 'true'){
+        echo "<h2>Qualcosa è andato storto!</h2>";
+        unset($_SESSION['errore_cod']);
+    }
     ?>
 
     <div class="wrapper">
@@ -49,7 +54,7 @@
                         <ol>
                             <li>Deve essere lunga almeno 7 caratteri;</li>
                             <li>Deve contenere almeno una lettera maiuscola e una minuscola;</li>
-                            <li>Deve contenere akmeno un numero;</li>
+                            <li>Deve contenere almeno un numero;</li>
                             <li>Deve contenere almeno un carattere speciale (!,@,#,$,%,^,&,*).</li>
                         </ol>       
                     </span>
