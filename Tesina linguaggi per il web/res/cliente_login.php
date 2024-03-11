@@ -6,7 +6,7 @@
     $password = $connessione->real_escape_string($_POST['password']);
     
     if($_SERVER["REQUEST_METHOD"] === "POST"){
-        $sql_select = "SELECT * FROM utenti WHERE email = '$email' AND utente = 1";
+        $sql_select = "SELECT * FROM utenti WHERE email = '$email'";
         if($result = $connessione->query($sql_select)){
             if($result->num_rows === 1){
                 $row = $result->fetch_array(MYSQLI_ASSOC);
@@ -25,6 +25,8 @@
                     $_SESSION['utente'] = $row['utente'];
                     $_SESSION['gestore'] = $row['gestore'];
                     $_SESSION['ammin'] = $row['ammin'];
+                    $_SESSION['indirizzo'] = $row['indirizzo_di_residenza'];
+                    $carrello = $_SESSION['carrello'];
                     header("Location: ../php/index.php");
                 } else {
                     $_SESSION['errore_login'] = 'true';

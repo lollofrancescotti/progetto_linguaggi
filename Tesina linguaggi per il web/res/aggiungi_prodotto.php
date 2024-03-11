@@ -9,6 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['nome'], $_POST['descrizione'], $_POST['prezzo'], $_FILES['immagine'], $_POST['tipologia'])) {
         // Carica il file XML
         $dom = new DOMDocument();
+        $dom->preserveWhiteSpace = false;
         $dom->load($xmlFile);
     
         // Trova l'ultimo ID nel catalogo
@@ -59,6 +60,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $tipologia = $dom->createElement('tipologia', $_POST['tipologia']);
         $prodotto->appendChild($tipologia);
 
+        $sconto_generico = $dom->createElement('sconto_generico', '0');
+        $prodotto->appendChild($sconto_generico);
+
+        $bonus = $dom->createElement('bonus', '0');
+        $prodotto->appendChild($bonus);
+
+        $sconto = $dom->createElement('sconto');
+        $prodotto->appendChild($sconto);
+
+        $x = $dom->createElement('x', '0');
+        $sconto->appendChild($x);
+        $y = $dom->createElement('y', '0');
+        $sconto->appendChild($y);
+        $m = $dom->createElement('m', '0');
+        $sconto->appendChild($m);
+        $data_m = $dom->createElement('data_m', '0');
+        $sconto->appendChild($data_m);
+        $n = $dom->createElement('n', '0');
+        $sconto->appendChild($n);
+        $r = $dom->createElement('r', '0');
+        $sconto->appendChild($r);
+        $ha_acqu = $dom->createElement('ha_acquistato', '0');
+        $sconto->appendChild($ha_acqu);
         // Gestione dell'immagine
         $immaginePath = '../img/' . basename($_FILES['immagine']['name']);
 
@@ -71,6 +95,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $immagine = $dom->createElement('immagine', $immaginePath);
             $prodotto->appendChild($immagine);
 
+            $dom->normalizeDocument();
+            $dom->formatOutput = true; 
             // Salva le modifiche
             $dom->save($xmlFile);
 

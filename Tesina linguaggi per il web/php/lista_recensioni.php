@@ -54,10 +54,15 @@ if ($recensioni->length > 0) {
     echo '<h1 class="titolo">Recensioni del prodotto: ' . $nome . '</h1>';
     echo '<table>';
 
+    $almenoUnPostSenzaSegnalazione = false;
 
 
     foreach ($recensioni as $recensione) {  
           $id_utente_recensione = $recensione->getAttribute("id_utente");
+          $post_segnalato =  $recensione->getAttribute("segnalato");
+        if($post_segnalato == 0){
+            $almenoUnPostSenzaSegnalazione = true;
+
          if($id_utente == $id_utente_recensione){
           echo '<tr><th>Gestione Recensione</th><th>Autore</th><th>Recensione</th><th>Data e Ora</th><th>Voto Utilità</th><th>Voto Supporto</th><th>Azione</th></tr>';
 
@@ -148,11 +153,11 @@ if ($recensioni->length > 0) {
             
             // Pulsanti per il voto di utilità
             echo '<label class="nome" for="votoUtilita">Utilità (da 1 a 5): </label>';
-            echo '<input class="input" type="number" name="votoUtilita" min="1" max="5" required/><br>';
+            echo '<input class="input" style="width: 50px;" type="number" name="votoUtilita" min="1" max="5" required/><br>';
 
             // Pulsanti per il voto di supporto
             echo '<label class="nome" for="votoSupporto">Supporto (da 1 a 3): </label>';
-            echo '<input class="input" type="number" name="votoSupporto" min="1" max="3" required/>';
+            echo '<input class="input" style="width: 50px;" type="number" name="votoSupporto" min="1" max="3" required/><br>';
 
             echo '<button class="done" type="submit" name="vota">CONFERMA<span id="done" title="Invia" class="material-symbols-outlined">done_outline</span></button>';
 
@@ -164,7 +169,10 @@ if ($recensioni->length > 0) {
     }
 
 
-  }      echo '</table>';
+  } }if (!$almenoUnPostSenzaSegnalazione) {
+    // Nessun post trovato con "segnalato" a 0, stampa un errore
+    echo '<p style="margin-top:10vh;" class="titolo">Nessuna recensione disponibile.</p>';
+}     echo '</table>';
 
  }else {
     echo '<tr><td colspan="4"><p class="titolo">Nessuna recensione disponibile.</p></td></tr>';
@@ -193,10 +201,16 @@ elseif($utente = 1){
         echo '<h1 class="titolo">Recensioni del prodotto: ' . $nome . '</h1>';
         echo '<table>';
     
-    
+        $almenoUnPostSenzaSegnalazione = false;
+
     
         foreach ($recensioni as $recensione) {  
               $id_utente_recensione = $recensione->getAttribute("id_utente");
+              $post_segnalato =  $recensione->getAttribute("segnalato");
+              if($post_segnalato == 0){
+                $almenoUnPostSenzaSegnalazione = true;
+
+              
              if($id_utente == $id_utente_recensione){
               echo '<tr><th>Gestione Recensione</th><th>Autore</th><th>Recensione</th><th>Data e Ora</th><th>Voto Utilità</th><th>Voto Supporto</th><th>Azione</th></tr>';
     
@@ -288,11 +302,11 @@ elseif($utente = 1){
                 
                 // Pulsanti per il voto di utilità
                 echo '<label class="nome" for="votoUtilita">Utilità (da 1 a 5): </label>';
-                echo '<input class="input" type="number" name="votoUtilita" min="1" max="5" required/><br>';
+                echo '<input class="input" style="width: 50px;" type="number" name="votoUtilita" min="1" max="5" required/><br>';
     
                 // Pulsanti per il voto di supporto
                 echo '<label class="nome" for="votoSupporto">Supporto (da 1 a 3): </label>';
-                echo '<input class="input" type="number" name="votoSupporto" min="1" max="3" required/><br>';
+                echo '<input class="input" style="width: 50px;" type="number" name="votoSupporto" min="1" max="3" required/><br>';
     
                 echo '<button class="done" type="submit" name="vota">CONFERMA<span id="done" title="Invia" class="material-symbols-outlined">done_outline</span></button>';
                 echo '</form>';
@@ -303,7 +317,10 @@ elseif($utente = 1){
         }
     
     
-      }      echo '</table>';
+         } }if (!$almenoUnPostSenzaSegnalazione) {
+            // Nessun post trovato con "segnalato" a 0, stampa un errore
+            echo '<p style="margin-top:10vh;" class="titolo">Nessuna recensione disponibile.</p>';
+        }      echo '</table>';
     
      } else {
         echo '<tr><td colspan="4"><p class="titolo">Nessuna recensione disponibile.</p></td></tr>';

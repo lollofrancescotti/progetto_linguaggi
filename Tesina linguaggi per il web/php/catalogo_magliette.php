@@ -11,6 +11,7 @@
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <?php
         include('../res/header.php');
+        include('../res/funzioni.php');
         ?>
     </head>
     <body>
@@ -80,7 +81,11 @@
                 $immagine = $prodotto->getElementsByTagName('immagine')->item(0)->nodeValue;
                 $id_prodotto = $prodotto->getElementsByTagName('id_prodotto')->item(0)->nodeValue;
                 $tipologia = $prodotto->getElementsByTagName('tipologia')->item(0)->nodeValue;
-                
+                $sconto_generico = $prodotto->getElementsByTagName('sconto_generico')->item(0)->nodeValue;
+                $bonus = $prodotto->getElementsByTagName('bonus')->item(0)->nodeValue;
+
+
+
                 if ($tipologia !== 'magliette') {
                     continue; // Salta il prodotto se la tipologia non è 'maglietta'
                 }
@@ -98,6 +103,7 @@
                     $utente = $_SESSION['utente'];
                     echo $nome;
                     if($gestore == 1){
+
                         echo '</h1>';
                         echo '<table class="table">';
                         echo '<tr>';
@@ -106,7 +112,8 @@
                         echo '<a class="btn1"style="margin-left:10vw;" title="Lascia una domanda" href="domande_prodotti.php?id_prodotto=' . $id_prodotto . '&nome=' . $nome .'&tipologia='. $tipologia .'&id='. $id_utente .'">Scrivi una domanda</a>';
                         echo '<a class="btn1"style="margin-left:10vw;"  title="Lascia una recensione" href="recensione_cliente.php?id_prodotto=' . $id_prodotto . '&nome=' . $nome .'&tipologia='. $tipologia .'&id='. $id_utente .'">Scrivi una recensione</a>';
                         echo '<a class="btn1" style="margin-left:10vw;"title="Lista delle recensioni" href="lista_recensioni.php?id_prodotto=' . $id_prodotto . '&nome=' . $nome .'&tipologia='. $tipologia .'&id='. $id_utente .'">Liste delle recensioni</a>';
-                        echo '<a class="btn1" style="margin-left:10vw;" href="modifica_prodotti_form.php?id_prodotto=' . $id_prodotto . '">Modifica prodotto</a>';
+                        echo '<a class="btn1" style="margin-left:10vw;" href="modifica_prodotti_form.php?id_prodotto=' . $id_prodotto . '&tipologia=' . $tipologia . '">Modifica prodotto</a>';
+                        echo '<a class="btn1" style="margin-left:10vw;" href="aggiungi_sconto_form.php?id_prodotto=' . $id_prodotto . '&tipologia=' . $tipologia . '">Aggiungi Sconto</a>';
                         echo '</td>';
                         echo '<td class="td">';
                         echo '<div class="box">';
@@ -115,20 +122,66 @@
                         echo '</td>';
                         echo '<td class="td">';
                         echo '<p class="des">' . $descrizione . '</p>';
-                        echo '<p class="prezzo">Prezzo: ' . $prezzo . '€</p>';
-                        echo '<a href="#"><span id="cart" class="material-symbols-outlined">add_shopping_cart</span></a>';
+
+                        $xmlPath = "../xml/catalogo_prodotti.xml";
+
+                        if(isset($_SESSION['loggato']) && $_SESSION['loggato'] == true){
+                            $prezzoScontato = calcolaScontoProdotto($xmlPath, $id_prodotto, $prezzo);
+                        }
+
+                        if(isset($_SESSION['sconto_parametrico']) && $_SESSION['sconto_parametrico'] = true){
+                            echo "<p id='successo'>Sconti Aggiuntivi Attivati</p>";
+                            unset($_SESSION['sconto_parametrico']);
+                        }
+                        echo '<table>';
+                            echo '<tr>';
+                                echo '<td>';
+                                    echo "<div class='tooltip'>";
+                                        echo "<span class='tooltiptext'>";
+                                            echo "<ul>";
+                                                echo "<li>Prezzo Base: $prezzo €</li>";
+                                                echo "<li>Bonus Crediti: $bonus €</li>";
+                                                echo "<li>Sconto Generico: " . $sconto_generico . " %</li>";
+                                            echo "</ul>";
+                                        echo "</span>";
+                                        echo "<i id='simbolo' class='material-symbols-outlined'>info</i>";
+                                    echo "</div>";
+                                echo '</td>';
+                                echo '<td>';
+                                    echo "<p class = 'prezzo'>Prezzo Finale: " . $prezzoScontato . " €</p>";
+                                echo '</td>';
+                            echo '</tr>';
+                        echo '</table>';
+
+                        echo "</div>";
+                        echo '<div class="linea">';
+                        echo '<form action="catalogo_' . $tipologia . '.php" method="post">';
+                        echo '<input type="hidden" name="id_prodotto" value="' . $id_prodotto . '">';
+                        echo '<input type="hidden" name="nome" value="' . $nome . '">';
+                        echo '<input type="hidden" name="bonus" value="' . $bonus . '">';
+                        echo '<input type="hidden" name="tipologia" value="' . $tipologia . '">';
+                        echo '<input type="hidden" name="prezzo" value="' . $prezzo . '">';
+                        echo '<input type="hidden" name="prezzoScontato" value="' . $prezzoScontato . '">';
+                        echo '<input class="input" type="number" name="quantita" value="0" min="1" step="1" size="3" max="99" />';
+                        echo '<button style="border:none; background:none; cursor:pointer;" type="submit" name="azione" value="aggiungi_al_carrello"><span id="cart" class="material-symbols-outlined">add_shopping_cart</span></button>';
+                        echo '</form>';
+                        echo '</div>';
                         echo '</tr>';
                         echo '</table>';
                         echo '</div>';
-                    } elseif($utente == 1 || $admin == 1){
+                    }elseif ($utente == 1 || $admin == 1) {
+                     
                         echo '</h1>';
                         echo '<table class="table">';
                         echo '<tr>';
                         echo '<td>';
-                        echo '<a class="btn1"style="margin-left:10vw;" title="Lista delle domande" href="domande.php?id_prodotto=' . $id_prodotto . '&nome=' . $nome .'&tipologia='. $tipologia .'&id='. $id_utente .'">Lista delle domande</a>';
-                        echo '<a class="btn1"style="margin-left:10vw;" title="Lascia una domanda" href="domande_prodotti.php?id_prodotto=' . $id_prodotto . '&nome=' . $nome .'&tipologia='. $tipologia .'&id='. $id_utente .'">Scrivi una domanda</a>';
-                        echo '<a class="btn1"style="margin-left:10vw;"  title="Lascia una recensione" href="recensione_cliente.php?id_prodotto=' . $id_prodotto . '&nome=' . $nome .'&tipologia='. $tipologia .'&id='. $id_utente .'">Scrivi una recensione</a>';
-                        echo '<a class="btn1" style="margin-left:10vw;"title="Lista delle recensioni" href="lista_recensioni.php?id_prodotto=' . $id_prodotto . '&nome=' . $nome .'&tipologia='. $tipologia .'&id='. $id_utente .'">Lista delle recensioni</a>';
+                        echo '<a class="btn1" style="margin-left:10vw;" title="Lista delle domande" href="domande.php?id_prodotto=' . $id_prodotto . '&nome=' . $nome . '&tipologia=' . $tipologia . '&id=' . $id_utente . '">Lista delle domande</a>';
+                        echo '<a class="btn1" style="margin-left:10vw;" title="Lascia una domanda" href="domande_prodotti.php?id_prodotto=' . $id_prodotto . '&nome=' . $nome . '&tipologia=' . $tipologia . '&id=' . $id_utente . '">Scrivi una domanda</a>';
+                        echo '<a class="btn1" style="margin-left:10vw;" title="Lascia una recensione" href="recensione_cliente.php?id_prodotto=' . $id_prodotto . '&nome=' . $nome . '&tipologia=' . $tipologia . '&id=' . $id_utente . '">Scrivi una recensione</a>';
+                        echo '<a class="btn1" style="margin-left:10vw;" title="Lista delle recensioni" href="lista_recensioni.php?id_prodotto=' . $id_prodotto . '&nome=' . $nome . '&tipologia=' . $tipologia . '&id=' . $id_utente . '">Lista delle recensioni</a>';
+                        if ($admin == 1) {
+                            echo '<a class="btn1" style="margin-left:10vw;" href="aggiungi_sconto_form.php?id_prodotto=' . $id_prodotto . '&tipologia=' . $tipologia . '">Aggiungi Sconto</a>';
+                        }
                         echo '</td>';
                         echo '<td class="td">';
                         echo '<div class="box">';
@@ -137,12 +190,54 @@
                         echo '</td>';
                         echo '<td class="td">';
                         echo '<p class="des">' . $descrizione . '</p>';
-                        echo '<p class="prezzo">Prezzo: ' . $prezzo . '€</p>';
-                        echo '<a href="#"><span id="cart" class="material-symbols-outlined">add_shopping_cart</span></a>';
+                       $xmlPath = "../xml/catalogo_prodotti.xml";
+
+                        if(isset($_SESSION['loggato']) && $_SESSION['loggato'] == true){
+                            $prezzoScontato = calcolaScontoProdotto($xmlPath, $id_prodotto, $prezzo);
+                        }
+
+                        if(isset($_SESSION['sconto_parametrico']) && $_SESSION['sconto_parametrico'] = true){
+                            echo "<p id='successo'>Sconti Aggiuntivi Attivati</p>";
+                            unset($_SESSION['sconto_parametrico']);
+                        }
+                        echo '<table>';
+                            echo '<tr>';
+                                echo '<td>';
+                                    echo "<div class='tooltip'>";
+                                        echo "<span class='tooltiptext'>";
+                                            echo "<ul>";
+                                                echo "<li>Prezzo Base: $prezzo €</li>";
+                                                echo "<li>Bonus Crediti: $bonus €</li>";
+                                                echo "<li>Sconto Generico: " . $sconto_generico . " %</li>";
+                                            echo "</ul>";
+                                        echo "</span>";
+                                        echo "<i id='simbolo' class='material-symbols-outlined'>info</i>";
+                                    echo "</div>";
+                                echo '</td>';
+                                echo '<td>';
+                                    echo "<p class = 'prezzo'>Prezzo Finale: " . $prezzoScontato . " €</p>";
+                                echo '</td>';
+                            echo '</tr>';
+                        echo '</table>';
+                        echo "</div>";
+                        echo '<div class="linea">';
+                        echo '<form action="catalogo_' . $tipologia . '.php" method="post">';
+                        echo '<input type="hidden" name="id_prodotto" value="' . $id_prodotto . '">';
+                        echo '<input type="hidden" name="nome" value="' . $nome . '">';
+                        echo '<input type="hidden" name="bonus" value="' . $bonus . '">';
+                        echo '<input type="hidden" name="tipologia" value="' . $tipologia . '">';
+
+                        echo '<input type="hidden" name="prezzo" value="' . $prezzo . '">';
+                        echo '<input type="hidden" name="prezzoScontato" value="' . $prezzoScontato . '">';
+                        echo '<input class="input" type="number" name="quantita" value="0" min="1" step="1" size="3" max="99" />';
+                        echo '<button style="border:none; background:none; cursor:pointer;" type="submit" name="azione" value="aggiungi_al_carrello"><span id="cart" class="material-symbols-outlined">add_shopping_cart</span></button>';
+                        echo '</form>';
+                        echo '</div>';
+                        echo '</td>';
                         echo '</tr>';
                         echo '</table>';
                         echo '</div>';
-                    } 
+                    }
                 }else{
                     echo $nome;
                     echo '</h1>';
@@ -156,7 +251,7 @@
                     echo '<td class="td">';
                     echo '<p class="des">' . $descrizione . '</p>';
                     echo '<p class="prezzo">Prezzo: ' . $prezzo . '€</p>';
-                    echo '<a href="#"><span id="cart" class="material-symbols-outlined">add_shopping_cart</span></a>';
+                    echo '<a href="login_cliente.php"><span id="cart" class="material-symbols-outlined">add_shopping_cart</span></a>';
                     echo '</tr>';
                     echo '</table>';
                     echo '</div>';
@@ -168,6 +263,35 @@
             }
 
             ?>
+       <?php
+// Inizializza o ottieni il carrello dalla sessione
+
+
+
+// Verifica se l'azione è "aggiungi_al_carrello"
+if (isset($_POST['azione']) && $_POST['azione'] === 'aggiungi_al_carrello') {
+    $id_prodotto = $_POST['id_prodotto'];
+    $nome = $_POST['nome'];
+    $prezzo = $_POST['prezzo'];
+    $prezzoScontato = $_POST['prezzoScontato'];
+    $quantita = $_POST['quantita'];
+    $bonus = $_POST['bonus'];
+
+    // Aggiungi il prodotto al carrello
+    $_SESSION['carrello'][] = array(
+        'id_prodotto' => $id_prodotto,
+        'nome' => $nome,
+        'prezzo' => $prezzo,
+        'bonus' => $bonus,
+        'quantita' => $quantita,
+        'prezzoScontato' => $prezzoScontato,
+    );
+    $carrello = $_SESSION['carrello'];
+
+}
+
+?>
+
            <script>
     // Quando il documento è caricato
     $(document).ready(function() {
@@ -201,41 +325,48 @@
             });
         });
 
-        // Ordino i prodotti in base alla richiesta
         $('#ordina').on('change', function() {
-            var selectedOption = $(this).val();
+    var selectedOption = $(this).val();
 
-            if (selectedOption === 'prezzoCrescente' || selectedOption === 'prezzoDecrescente' || 
-                selectedOption === 'nomeCrescente' || selectedOption === 'nomeDecrescente') {
-                // Se l'opzione selezionata è prezzo o nome, ordina direttamente lato client
-                var prodottiArray = $('.prodotto').toArray();
+    if (selectedOption === 'prezzoCrescente' || selectedOption === 'prezzoDecrescente' || 
+        selectedOption === 'nomeCrescente' || selectedOption === 'nomeDecrescente') {
+        // Se l'opzione selezionata è prezzo o nome, ordina direttamente lato client
+        var prodottiArray = $('.prodotto').toArray();
 
-                prodottiArray.sort(function(a, b) {
-                    if (selectedOption.includes('prezzo')) {
-                        var prezzoA = parseFloat($(a).find('.prezzo').text().replace('Prezzo: ', '').replace('€', '').trim());
-                        var prezzoB = parseFloat($(b).find('.prezzo').text().replace('Prezzo: ', '').replace('€', '').trim());
+        prodottiArray.sort(function(a, b) {
+            if (selectedOption.includes('prezzo')) {
+                var prezzoA = parseFloat($(a).find('.prezzo').text().replace('Prezzo Finale: ', '').replace('€', '').trim());
+                var prezzoB = parseFloat($(b).find('.prezzo').text().replace('Prezzo Finale: ', '').replace('€', '').trim());
 
-                        return selectedOption === 'prezzoCrescente' ? prezzoA - prezzoB : prezzoB - prezzoA;
-                    } else if (selectedOption.includes('nome')) {
-                        var nomeA = $(a).find('.nome').text().toLowerCase();
-                        var nomeB = $(b).find('.nome').text().toLowerCase();
-
-                        return selectedOption === 'nomeCrescente' ? nomeA.localeCompare(nomeB) : nomeB.localeCompare(nomeA);
-                    }
-                });
-
-                // Rimuovi tutti i prodotti attualmente visualizzati
-                $('.prodotto').remove();
-
-                // Itera attraverso i prodotti ordinati e stampali
-                for (var i = 0; i < prodottiArray.length; i++) {
-                    $('.cont').append(prodottiArray[i]);
+                // Controlla se il prezzo è scontato
+                if ($(a).find('.prezzoScontato').length > 0) {
+                    prezzoA = parseFloat($(a).find('.prezzoScontato').text().replace('Prezzo Finale: ', '').replace('€', '').trim());
                 }
-            } else {
-                // Se l'opzione selezionata non è prezzo o nome, gestisci l'ordinamento lato server con il normale ricaricamento della pagina
-                window.location.href = 'catalogo_magliette.php?ordina=' + selectedOption;
+                if ($(b).find('.prezzoScontato').length > 0) {
+                    prezzoB = parseFloat($(b).find('.prezzoScontato').text().replace('Prezzo Finale: ', '').replace('€', '').trim());
+                }
+
+                return selectedOption === 'prezzoCrescente' ? prezzoA - prezzoB : prezzoB - prezzoA;
+            } else if (selectedOption.includes('nome')) {
+                var nomeA = $(a).find('.nome').text().toLowerCase();
+                var nomeB = $(b).find('.nome').text().toLowerCase();
+
+                return selectedOption === 'nomeCrescente' ? nomeA.localeCompare(nomeB) : nomeB.localeCompare(nomeA);
             }
         });
+
+        // Rimuovi tutti i prodotti attualmente visualizzati
+        $('.prodotto').remove();
+
+        // Itera attraverso i prodotti ordinati e stampali
+        for (var i = 0; i < prodottiArray.length; i++) {
+            $('.cont').append(prodottiArray[i]);
+        }
+    } else {
+        // Se l'opzione selezionata non è prezzo o nome, gestisci l'ordinamento lato server con il normale ricaricamento della pagina
+        window.location.href = 'catalogo_magliette.php?ordina=' + selectedOption;
+    }
+});
     });
 </script>
 

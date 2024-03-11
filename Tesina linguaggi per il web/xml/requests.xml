@@ -2,10 +2,10 @@
 <requests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="requests.xsd">
   <request status="Approvato">
     <email>federicodelullo84@gmail.com</email>
-    <importo>50</importo>
+    <importo>500</importo>
   </request>
-  <request status="Rifiutato">
-    <email>lorenzo@gmail.com</email>
-    <importo>200</importo>
+  <request status="Approvato">
+    <email>luca@gmail.com</email>
+    <importo>100</importo>
   </request>
 </requests>

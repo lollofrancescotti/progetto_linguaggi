@@ -29,6 +29,7 @@ $id_prodotto = $_POST['id_prodotto'];
 $autoreDomanda = $_POST['autoreDomanda'];
 $nome = $_POST['nome'];
 $tipologia = $_POST['tipologia'];
+$id_segnalatore = $_POST['segnalatore'];
 
 $xmlFile = '../xml/segnalazioni.xml';  // Utilizzo di un percorso relativo
 $dom = new DOMDocument();
@@ -45,6 +46,8 @@ $segnalazione = $dom->createElement('segnalazione');
 $segnalazione->setAttribute('status', 'In Attesa');
 $segnalazione->setAttribute('id_domanda', $id_domanda);
 $segnalazione->setattribute('id_prodotto', $id_prodotto);
+$segnalazione->setattribute('autore_segnalazione', $id_segnalatore);
+
 
 $domanda_element = $dom->createElement('testo_domanda', $testo_domanda);
 $segnalazione->appendChild($domanda_element);
@@ -76,6 +79,8 @@ header("Location: ../php/domande.php?id_prodotto=$id_prodotto&nome=$nome&tipolog
     $autoreRisposta = $_POST['autoreRisposta'];
     $nome = $_POST['nome'];
     $tipologia = $_POST['tipologia'];
+    $id_segnalatore = $_POST['segnalatore'];
+
 
     $xmlFile = '../xml/segnalazioni.xml'; 
     $dom = new DOMDocument();
@@ -92,6 +97,7 @@ header("Location: ../php/domande.php?id_prodotto=$id_prodotto&nome=$nome&tipolog
     $segnalazione->setAttribute('status', 'In Attesa');
     $segnalazione->setAttribute('id_risposta', $id_risposta);
     $segnalazione->setattribute('id_prodotto', $id_prodotto);
+    $segnalazione->setattribute('autore_segnalazione', $id_segnalatore);
 
     
     $domanda_element = $dom->createElement('id_domanda', $id_domanda);
@@ -125,6 +131,9 @@ $id_prodotto = $_POST['id_prodotto'];
 $autoreRecensione = $_POST['autoreRecensione'];
 $nome = $_POST['nome'];
 $tipologia = $_POST['tipologia'];
+$id_segnalatore = $_POST['segnalatore'];
+
+
 
 $xmlFile = '../xml/segnalazioni.xml';  // Utilizzo di un percorso relativo
 $dom = new DOMDocument();
@@ -141,6 +150,7 @@ $segnalazione = $dom->createElement('segnalazione');
 $segnalazione->setAttribute('status', 'In Attesa');
 $segnalazione->setattribute('id_prodotto', $id_prodotto);
 $segnalazione->setattribute('id_recensione', $id_recensione);
+$segnalazione->setattribute('autore_segnalazione', $id_segnalatore);
 
 
 

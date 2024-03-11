@@ -74,10 +74,17 @@ if ($domande->length > 0) {
     echo '<h1 class="titolo">Domande Prodotto: ' . $nome . '</h1>';
     echo '<table>';
 
+    $almenoUnPostSenzaSegnalazione = false;
 
     foreach ($domande as $domanda) {    
         $id_utente_domanda = $domanda->getAttribute("id_utente");
-        if($id_utente == $id_utente_domanda){
+        $post_segnalato =  $domanda->getAttribute("segnalato");
+
+        if($post_segnalato == 0){
+
+            $almenoUnPostSenzaSegnalazione = true;
+        
+            if($id_utente == $id_utente_domanda ){
             echo '<tr>';
         echo '<th>Gestisci Domanda</th><th>Autore Domanda</th><th>Domanda</th><th>Voto Utilità</th><th>Voto Supporto</th><th>Valutazione</th><th>Rispondi</th>';
         echo '</tr>';
@@ -157,10 +164,10 @@ if ($domande->length > 0) {
         echo '<input type="hidden" name="nome" value="' . $nome . '"/>';
 
         echo '<label class="titolo" for="votoUtilita">Utilità (da 1 a 5): </label>';
-        echo '<input class="input" type="number" name="votoUtilita" min="1" max="5" required/><br>';
+        echo '<input class="input" style="width: 50px;" type="number" name="votoUtilita" min="1" max="5" required/><br>';
     
         echo '<label class="titolo" for="votoSupporto">Supporto (da 1 a 3): </label>';
-        echo '<input class="input" type="number" name="votoSupporto" min="1" max="3" required/>';
+        echo '<input class="input" style="width: 50px;" type="number" name="votoSupporto" min="1" max="3" required/><br>';
     
         echo '<button class="done" type="submit" name="vota">CONFERMA<span id="done" title="Invia" class="material-symbols-outlined">done_outline</span></button>';
         echo '</form>';
@@ -186,10 +193,13 @@ if ($domande->length > 0) {
         // Mostra le risposte
         $risposte = $domanda->getElementsByTagName('risposta');
         if ($risposte->length > 0) {
-            echo '<tr><th class="risp">Gestisci Risposta</th><th class="risp">Autore Risposta</th><th class="risp">Risposta</th><th>Voto Utilità</th><th>Voto Supporto</th><th class="risp">Valutazione</th></tr>';
         
             foreach ($risposte as $risposta) {
                 $id_utente_risposta=$risposta->getAttribute('id_utente');
+                $risp_segnalato = $risposta->getAttribute('segnalato');
+                if($risp_segnalato == 0){
+                    echo '<tr><th class="risp">Gestisci Risposta</th><th class="risp">Autore Risposta</th><th class="risp">Risposta</th><th>Voto Utilità</th><th>Voto Supporto</th><th class="risp">Valutazione</th></tr>';
+
                 if($id_utente_risposta == $id_utente){
                 $utilitaNode = $xpath->query("utilita_risposta/valore[@id_utente='$idUtenteSessione']", $risposta)->item(0);
                 $supportoNode = $xpath->query("supporto_risposta/valore[@id_utente='$idUtenteSessione']", $risposta)->item(0);
@@ -278,10 +288,10 @@ if ($domande->length > 0) {
                 echo '<input type="hidden" name="nome" value="' . $nome . '"/>';            
 
                 echo '<label class="titolo" for="votoUtilita">Utilità (da 1 a 5): </label>';
-                echo '<input class="input" type="number" name="votoUtilita" min="1" max="5" required/><br>';
+                echo '<input class="input" style="width: 50px;" type="number" name="votoUtilita" min="1" max="5" required/><br>';
             
                 echo '<label class="titolo" for="votoSupporto">Supporto (da 1 a 3): </label>';
-                echo '<input class="input" type="number" name="votoSupporto" min="1" max="3" required/>';
+                echo '<input class="input" style="width: 50px;" type="number" name="votoSupporto" min="1" max="3" required/><br>';
             
                 echo '<button class="done" type="submit" name="vota">CONFERMA<span id="done" title="Invia" class="material-symbols-outlined">done_outline</span></button>';
                 echo '</form>';
@@ -292,9 +302,15 @@ if ($domande->length > 0) {
                 echo '</tr>';
             
             }
+        }
           }
         }
-      }
+       }
+      } if (!$almenoUnPostSenzaSegnalazione) {
+        // Nessun post trovato con "segnalato" a 0, stampa un errore
+        echo '<p style="margin-top:10vh;" class="titolo">Nessuna domanda disponibile.</p>';
+    }
+      
     } else {
             echo '<tr><td colspan="4"><p class="titolo">Nessuna domanda disponibile.</p></td></tr>';
         }
@@ -341,10 +357,15 @@ if(isset($_GET['nome']) && isset($_GET['tipologia'])){
 if ($domande->length > 0) {
     echo '<h1 class="titolo">Domande Prodotto: ' . $nome . '</h1>';
     echo '<table>';
+    $almenoUnPostSenzaSegnalazione = false;
 
 
     foreach ($domande as $domanda) { 
         $id_utente_domanda = $domanda->getAttribute("id_utente");
+        $post_segnalato = $domanda->getAttribute("segnalato");
+        if($post_segnalato == 0){
+            $almenoUnPostSenzaSegnalazione = true;
+
         if($id_utente == $id_utente_domanda){
 
             echo '<tr>';
@@ -429,10 +450,10 @@ if ($domande->length > 0) {
         echo '<input type="hidden" name="nome" value="' . $nome . '"/>';            
 
         echo '<label class="titolo" for="votoUtilita">Utilità (da 1 a 5): </label>';
-        echo '<input class="input" type="number" name="votoUtilita" min="1" max="5" required/><br>';
+        echo '<input class="input" style="width: 50px;" type="number" name="votoUtilita" min="1" max="5" required/><br>';
     
         echo '<label class="titolo" for="votoSupporto">Supporto (da 1 a 3): </label>';
-        echo '<input class="input" type="number" name="votoSupporto" min="1" max="3" required/>';
+        echo '<input class="input" style="width: 50px;" type="number" name="votoSupporto" min="1" max="3" required/><br>';
     
         echo '<button class="done" type="submit" name="vota">CONFERMA<span id="done" title="Invia" class="material-symbols-outlined">done_outline</span></button>';
         echo '</form>';
@@ -458,10 +479,13 @@ if ($domande->length > 0) {
         // Mostra le risposte
         $risposte = $domanda->getElementsByTagName('risposta');
         if ($risposte->length > 0) {
-            echo '<tr><th class="risp">Gestisci Risposta</th><th class="risp">Autore Risposta</th><th class="risp">Risposta</th><th>Voto Utilità</th><th>Voto Supporto</th><th class="risp">Valutazione</th></tr>';
         
             foreach ($risposte as $risposta) {
                 $id_utente_risposta=$risposta->getAttribute('id_utente');
+                $risp_segnalato=$risposta->getAttribute('segnalato');
+                if($risp_segnalato == 0){
+                echo '<tr><th class="risp">Gestisci Risposta</th><th class="risp">Autore Risposta</th><th class="risp">Risposta</th><th>Voto Utilità</th><th>Voto Supporto</th><th class="risp">Valutazione</th></tr>';
+
                 if($id_utente_risposta == $id_utente){
                 $utilitaNode = $xpath->query("utilita_risposta/valore[@id_utente='$idUtenteSessione']", $risposta)->item(0);
                 $supportoNode = $xpath->query("supporto_risposta/valore[@id_utente='$idUtenteSessione']", $risposta)->item(0);
@@ -559,10 +583,10 @@ if ($domande->length > 0) {
                 echo '<input type="hidden" name="nome" value="' . $nome . '"/>';            
 
                 echo '<label class="titolo" for="votoUtilita">Utilità (da 1 a 5): </label>';
-                echo '<input class="input" type="number" name="votoUtilita" min="1" max="5" required/><br>';
+                echo '<input class="input" style="width: 50px;" type="number" name="votoUtilita" min="1" max="5" required/><br>';
             
                 echo '<label class="titolo" for="votoSupporto">Supporto (da 1 a 3): </label>';
-                echo '<input class="input" type="number" name="votoSupporto" min="1" max="3" required/>';
+                echo '<input class="input" style="width: 50px;" type="number" name="votoSupporto" min="1" max="3" required/><br>';
             
                 echo '<button class="done" type="submit" name="vota">CONFERMA<span id="done" title="Invia" class="material-symbols-outlined">done_outline</span></button>';
                 echo '</form>';
@@ -572,8 +596,16 @@ if ($domande->length > 0) {
                 echo '</td>';
                 echo '</tr>';
             
-            }
-     }}}}  else {
+                }
+              }
+           }
+         }
+      }
+   }if (!$almenoUnPostSenzaSegnalazione) {
+    // Nessun post trovato con "segnalato" a 0, stampa un errore
+    echo '<p style="margin-top:10vh;" class="titolo">Nessuna domanda disponibile.</p>';
+}
+}  else {
             echo '<tr><td colspan="4"><p class="titolo">Nessuna domanda disponibile.</p></td></tr>';
         }
     }
